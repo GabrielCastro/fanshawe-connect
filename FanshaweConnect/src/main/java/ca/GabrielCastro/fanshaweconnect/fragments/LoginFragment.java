@@ -16,6 +16,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import ca.GabrielCastro.fanshaweconnect.R;
+import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
+import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
 public class LoginFragment extends Fragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
@@ -102,7 +104,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
             return;
         }
         //Toast.makeText(getActivity(), "success", Toast.LENGTH_SHORT).show();
-        mTask = new LoginTask();
+        mTask = new LoginTask(mUserText, mPasswordText);
         mTask.execute();
     }
 
@@ -112,7 +114,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
         return false;
     }
 
-    private class LoginTask extends AsyncTask<Void,Void,Boolean> {
+    private class LoginTask extends CheckCredentials {
+
+        public LoginTask(String userName, String password) {
+            super(userName, password, null);
+        }
 
         @Override
         protected void onPreExecute() {
@@ -120,18 +126,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-
-            }
-            return mPasswordText.equals("bannana");
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            mCallbacks.done(success);
+        protected void onPostExecute(Integer code) {
+            mCallbacks.done( code == RETURN_OK );
         }
 
     }

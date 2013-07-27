@@ -15,6 +15,14 @@ public interface CONSTANTS {
 	public static final byte DEBUG_THREAD_LONGER = 0x08;// 0000 1000
 	public static final byte DEBUG_FORCE_INIT = 0x10;// 0001 0000
 
+    String SECOND_URL
+            = "https://www.fanshaweonline.ca/d2l/lp/homepage/LegacyWidgetViewer.d2l" +
+            "?ou=29533" +
+            "&WidgetPath=%2fd2l%2flms%2fwidgets%2flinks%2fuser_links.d2l" +
+            "&WidgetId=13" +
+            "&d2l_headingLevel=3" +
+            "&d2l_body_type=3";
+
 	public static byte DEBUG_LEVEL = (DEBUG_ALL_HTTP
 			| DEBUG_ALL_CON_STATE_CHANGE | DEBUG_ALL_LOGONS | DEBUG_THREAD_LONGER);// 0000
 																					// 1111
