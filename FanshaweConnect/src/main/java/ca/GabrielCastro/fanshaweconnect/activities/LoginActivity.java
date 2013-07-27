@@ -1,14 +1,13 @@
 package ca.GabrielCastro.fanshaweconnect.activities;
 
-import android.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
+import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.fragments.LoginFragment;
 import ca.GabrielCastro.fanshaweconnect.fragments.ProgressDisplayFragment;
 
@@ -30,11 +29,11 @@ public class LoginActivity extends ActionBarActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (mLoginFragment == null) {
             mLoginFragment = LoginFragment.newInstance();
-            ft.replace(R.id.content, mLoginFragment, FRAG_TAG_LOGIN);
+            ft.replace(android.R.id.content, mLoginFragment, FRAG_TAG_LOGIN);
         }
         if (mProgressFragment == null) {
             mProgressFragment = new ProgressDisplayFragment();
-            ft.add(R.id.content, mProgressFragment, FRAG_TAG_PROGRESS)
+            ft.add(android.R.id.content, mProgressFragment, FRAG_TAG_PROGRESS)
                 .hide(mProgressFragment);
         }
         ft.commit();
@@ -47,7 +46,7 @@ public class LoginActivity extends ActionBarActivity
                 .beginTransaction()
                 .show(mProgressFragment)
                 .hide(mLoginFragment)
-                .setCustomAnimations(R.anim.fade_out, R.anim.fade_in)
+                .setCustomAnimations(R.anim.abc_fade_out, R.anim.abc_fade_in)
                 .commit();
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
@@ -65,7 +64,7 @@ public class LoginActivity extends ActionBarActivity
                     .beginTransaction()
                     .hide(mProgressFragment)
                     .show(mLoginFragment)
-                    .setCustomAnimations(R.anim.fade_out, R.anim.fade_in)
+                    .setCustomAnimations(R.anim.abc_fade_out, R.anim.abc_fade_in)
                     .commit();
         }
     }

@@ -2,7 +2,8 @@ package ca.GabrielCastro.fanshaweconnect.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.appcompat.R;
+
+import ca.GabrielCastro.fanshaweconnect.R;
 
 public class MainActivity extends ActionBarActivity {
 
