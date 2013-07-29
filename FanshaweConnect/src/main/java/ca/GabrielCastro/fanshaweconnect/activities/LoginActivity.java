@@ -1,6 +1,7 @@
 package ca.GabrielCastro.fanshaweconnect.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +11,9 @@ import android.view.inputmethod.InputMethodManager;
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.fragments.LoginFragment;
 import ca.GabrielCastro.fanshaweconnect.fragments.ProgressDisplayFragment;
+import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
+import ca.GabrielCastro.fanshawelogin.CONSTANTS;
+import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 
 public class LoginActivity extends ActionBarActivity
         implements LoginFragment.CallBacks, ProgressDisplayFragment.Callbacks {
@@ -53,19 +57,26 @@ public class LoginActivity extends ActionBarActivity
     }
 
     @Override
-    public void done(boolean success) {
-        if (success) {
-            if (!isFinishing()) {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-            }
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .hide(mProgressFragment)
-                    .show(mLoginFragment)
-                    .setCustomAnimations(R.anim.abc_fade_out, R.anim.abc_fade_in)
-                    .commit();
+    public void success(String[] userNameLastName) {
+        if (!isFinishing()) {
+            startActivity(new Intent(this, MainActivity.class).putExtra("a", userNameLastName));
+            finish();
         }
     }
+
+    @Override
+    public void failed(CheckCredentials.FolAuthResponse code) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .hide(mProgressFragment)
+                .show(mLoginFragment)
+                .setCustomAnimations(R.anim.abc_fade_out, R.anim.abc_fade_in)
+                .commit();
+    }
+
+    @Override
+    public SharedPreferences getSecurePreferences() {
+        return ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
+    }
+
 }

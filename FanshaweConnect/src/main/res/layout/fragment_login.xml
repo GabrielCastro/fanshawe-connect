@@ -4,11 +4,12 @@
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_horizontal">
 
     <LinearLayout
             style="@style/LoginFormContainer"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
 
         <RelativeLayout

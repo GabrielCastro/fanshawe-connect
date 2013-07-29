@@ -1,7 +1,7 @@
 package ca.GabrielCastro.fanshaweconnect.fragments;
 
 import android.app.Activity;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,15 +17,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import ca.GabrielCastro.fanshaweconnect.R;
+import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
-import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
 public class LoginFragment extends Fragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private CallBacks mCallbacks;
     private LoginTask mTask;
-
-
     private View mView;
     private EditText mUserName;
     private String mUserText;
@@ -47,7 +46,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
         } else {
             throw new IllegalStateException(
                     "No Fragment callbacks present in " + activity.getClass().getSimpleName()
-                    + getParentFragment() == null ? "" : " or " + getParentFragment().getClass().getSimpleName()
+                            + getParentFragment() == null ? "" : " or " + getParentFragment().getClass().getSimpleName()
             );
         }
     }
@@ -68,6 +67,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
 
         mLoginButton.setOnClickListener(this);
         mUserName.setOnEditorActionListener(this);
+        mPassword.setOnEditorActionListener(this);
         ArrayAdapter adapter = (ArrayAdapter) mDomainSpinner.getAdapter();
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -110,8 +110,44 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        v.setError(null);
+        if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED && v.getId() == R.id.password) {
+            attemptLogin();
+            return true;
+        }
         return false;
+    }
+
+    private void setFailure(CheckCredentials.FolAuthResponse code) {
+        mPassword.setText(null);
+        switch (code) {
+            case RETURN_OK:
+                mPassword.setError(null);
+                break;
+            case RETURN_INVALID:
+                mPassword.setError(getString(R.string.error_incorrect_password));
+                mPassword.requestFocus();
+                break;
+            case RETURN_ERROR:
+                mPassword.setError("unable to verify your email");
+                mPassword.requestFocus();
+                break;
+            case RETURN_EXCEPTION:
+                mPassword.setError("unable to connect to FOL");
+                mPassword.requestFocus();
+                break;
+        }
+    }
+
+    public static interface CallBacks {
+
+        public void showLoading();
+
+        public void success(String[] userNameLastName);
+
+        public void failed(CheckCredentials.FolAuthResponse code);
+
+        public SharedPreferences getSecurePreferences();
+
     }
 
     private class LoginTask extends CheckCredentials {
@@ -126,17 +162,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
         }
 
         @Override
-        protected void onPostExecute(Integer code) {
-            mCallbacks.done( code == RETURN_OK );
+        protected FolAuthResponse doInBackground(Void... params) {
+            FolAuthResponse response = super.doInBackground(params);
+            SharedPreferences p = mCallbacks.getSecurePreferences();
+            p.edit()
+                    .putString(CONSTANTS.USER_KEY, userName)
+                    .putString(CONSTANTS.PASSWORD_KEY, password)
+                    .commit();
+            return response;
         }
 
-    }
-
-    public static interface CallBacks {
-
-        public void showLoading();
-
-        public void done(boolean success);
+        @Override
+        protected void onPostExecute(CheckCredentials.FolAuthResponse code) {
+            if (code == FolAuthResponse.RETURN_OK) {
+                mCallbacks.success(this.name);
+            } else {
+                setFailure(code);
+                mCallbacks.failed(code);
+            }
+        }
 
     }
 

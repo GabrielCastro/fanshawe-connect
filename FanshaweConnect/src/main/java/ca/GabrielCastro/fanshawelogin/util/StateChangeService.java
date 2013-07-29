@@ -1,8 +1,8 @@
 package ca.GabrielCastro.fanshawelogin.util;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,16 +13,24 @@ import android.util.Log;
 import java.util.concurrent.ExecutionException;
 
 import ca.GabrielCastro.fanshaweconnect.R;
+import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
-public class NetworkChangeStateReceiver extends BroadcastReceiver implements CONSTANTS {
+public class StateChangeService extends IntentService implements CONSTANTS {
 
-    private static final String TAG = "ChSate";
-    String user, pass;
+    private static final String TAG = "StateChangeService";
 
-    @SuppressWarnings("deprecation")
+    private String user, pass;
+
+    public StateChangeService() {
+        super(TAG);
+    }
+
     @Override
-    public void onReceive(Context context, Intent intent) {
+    protected void onHandleIntent(Intent intent) {
+
+        Context context = getApplicationContext();
+
         ConnectivityManager conMrg = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (Tools.isDebugLevelSet(DEBUG_ALL_CON_STATE_CHANGE)) {
@@ -34,7 +42,7 @@ public class NetworkChangeStateReceiver extends BroadcastReceiver implements CON
             Log.d(TAG, "changed state to: " + netInfo);
         }
 
-        SharedPreferences prefs = context.getSharedPreferences(CONSTANTS.PREFS_NAME, 0);
+        SharedPreferences prefs = ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
         user = prefs.getString(CONSTANTS.USER_KEY, "");
         pass = prefs.getString(CONSTANTS.PASSWORD_KEY, "");
         if (user == "" || pass == "") {
@@ -58,12 +66,12 @@ public class NetworkChangeStateReceiver extends BroadcastReceiver implements CON
 
         switch (result) {
             case LogOnRequest.RETURN_OK:
-                note.setLatestEventInfo(context, "Loged in",
-                        "you where automatically connected to Fanshawe's wifi useing the stored credentials", null);
+                note.setLatestEventInfo(context, "Logged in",
+                        "you where automatically connected to Fanshawe's wifi using the stored credentials", null);
                 notificationManager.notify(0, note);
                 break;
             case LogOnRequest.RETURN_INVALID_CRED:
-                note.setLatestEventInfo(context, "Error", "Your Credetials appere to be broken, or maybe we're not at Fanshawe", null);
+                note.setLatestEventInfo(context, "Error", "Your Credentials appear to be broken, or maybe we're not at Fanshawe", null);
                 notificationManager.notify(0, note);
                 break;
             case LogOnRequest.RETURN_NOT_AT_FANSHAWE:
@@ -72,7 +80,6 @@ public class NetworkChangeStateReceiver extends BroadcastReceiver implements CON
             case LogOnRequest.RETURN_CONNECTION_ERROR:
             case LogOnRequest.RETURN_USPECIFIED_ERROR:
         }
-
     }
 
 }

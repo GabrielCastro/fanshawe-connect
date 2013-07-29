@@ -1,12 +1,10 @@
 package ca.GabrielCastro.fanshawelogin.util;
 
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -25,16 +23,18 @@ import java.util.List;
 
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
-public class CheckCredentials extends AsyncTask<Void, Void, Integer> {
+public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.FolAuthResponse> {
 
-    public static final int RETURN_OK = 0;
-    public static final int RETURN_INVALID = 1;
-    public static final int RETURN_ERROR = 2;
-    public static final int RETURN_EXCEPTION = 3;
+    public static enum FolAuthResponse {
+        RETURN_OK,
+        RETURN_INVALID,
+        RETURN_ERROR,
+        RETURN_EXCEPTION
+    }
 
     private static final String TAG = "checkCred AsyncTask";
-    private String userName;
-    private String password;
+    protected String userName;
+    protected String password;
     private OnCredentialsChecked cb;
     protected String[] name = {};
 
@@ -45,7 +45,7 @@ public class CheckCredentials extends AsyncTask<Void, Void, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(Void... params) {
+    protected FolAuthResponse doInBackground(Void... params) {
         try {
             HttpClient client = new DefaultHttpClient();
             client.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.TRUE);
@@ -66,21 +66,24 @@ public class CheckCredentials extends AsyncTask<Void, Void, Integer> {
             localContext.setAttribute(ClientContext.COOKIE_STORE, new BasicCookieStore());
 
             HttpResponse response = client.execute(post, localContext);
-            response.getEntity().consumeContent();
+            if (!isLoggedIn(EntityUtils.toString(response.getEntity()))) {
+                return FolAuthResponse.RETURN_INVALID;
+            }
+
             response = client.execute(new HttpGet(CONSTANTS.SECOND_URL), localContext);
             Log.d(TAG, "response code " + response.getStatusLine().getStatusCode());
             return doParseContent(EntityUtils.toString(response.getEntity()));
         } catch (Exception e) {
             e.printStackTrace();
-            return RETURN_EXCEPTION;
+            return FolAuthResponse.RETURN_EXCEPTION;
         }
     }
 
-    private Integer doParseContent(String content) {
-        if (content.contains("alert( 'Invalid Username\\/Password.\\n\\nYou will be taken back to the login page.' );")) {
-            return RETURN_INVALID;
-        }
+    private boolean isLoggedIn(String content) {
+        return !content.contains("alert( 'Invalid Username\\/Password.\\n\\nYou will be taken back to the login page.' );");
+    }
 
+    private FolAuthResponse doParseContent(String content) {
         // FirstName:'Gabriel',LastName:'Castro Londono',UserName:
         String nameStart = "FirstName:'";
         String nameSplit = "',LastName:'";
@@ -90,13 +93,13 @@ public class CheckCredentials extends AsyncTask<Void, Void, Integer> {
             int endName = content.indexOf(nameEnd, startName);
             name = content.substring(startName, endName).split(nameSplit);
         } catch (ArrayIndexOutOfBoundsException e) {
-            return RETURN_ERROR;
+            return FolAuthResponse.RETURN_ERROR;
         }
-        return RETURN_OK;
+        return FolAuthResponse.RETURN_OK;
     }
 
     @Override
-    protected void onPostExecute(Integer result) {
+    protected void onPostExecute(FolAuthResponse result) {
         cb.credentialsChecked(result, this.name);
     }
 }
