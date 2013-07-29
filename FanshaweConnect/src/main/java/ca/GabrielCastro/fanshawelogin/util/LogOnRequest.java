@@ -108,7 +108,7 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
      * @throws ClientProtocolException
      * @throws IOException
      */
-    private static TestUriStatus checkTestURI() throws ClientProtocolException, IOException {
+    private static TestUriStatus checkTestURI() throws IOException {
 
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(TEST_URI);
@@ -186,8 +186,6 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
             }
 
             return Status.RETURN_UNABLE_TO_LOGIN;
-        } catch (ClientProtocolException e) {
-            return Status.RETURN_CONNECTION_ERROR;
         } catch (IOException e) {
             return Status.RETURN_CONNECTION_ERROR;
         } catch (URISyntaxException e) {
