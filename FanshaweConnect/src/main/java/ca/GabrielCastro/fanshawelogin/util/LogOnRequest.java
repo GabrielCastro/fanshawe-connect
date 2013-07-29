@@ -27,38 +27,39 @@ import java.util.List;
 
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
-public class LogOnRequest extends AsyncTask<String, Integer, Integer> {
+public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status> {
 
-    public static final int RETURN_OK = 0;
-    public static final int RETURN_NOT_AT_FANSHAWE = 1;
-    public static final int RETURN_AT_FANSHAWE_OK = 2;
-    public static final int RETURN_UNABLE_TO_LOGIN = 3;
-    public static final int RETURN_CONNECTION_ERROR = 4;
-    public static final int RETURN_USPECIFIED_ERROR = 5;
-    public static final int RETURN_INVALID_CRED = 6;
-    public static final int RETURN_NO_WIFI = 7;
-    // public static final int RETURN_
+    public static enum Status {
+        RETURN_OK,
+        RETURN_NOT_AT_FANSHAWE,
+        RETURN_AT_FANSHAWE_OK,
+        RETURN_UNABLE_TO_LOGIN,
+        RETURN_CONNECTION_ERROR,
+        RETURN_USPECIFIED_ERROR,
+        RETURN_INVALID_CRED,
+        RETURN_NO_WIFI
+    }
+
     public static final String TAG = "LogOnRequest";
     /**
      * *** begin return codes for test uri *****
      */
-    private static final int testUri_CONNECTION_OK = 8;
-    private static final int testUri_FANSHAWE_REDIRECT = 9;
-    private static final int testUri_OTHER_REDIRECT = 10;
-    /**
-     * *** end return codes for test uri *******
-     */
-    private static final int testUri_NULL_ENTITY = 11;
+    private static enum TestUriStatus {
+        testUri_CONNECTION_OK,
+        testUri_FANSHAWE_REDIRECT,
+        testUri_OTHER_REDIRECT,
+        testUri_NULL_ENTITY;
+    }
+
     /**
      * *** begin return codes for do Logon *****
      */
-    private static final int doLog__OK = 12;
-    private static final int doLog__LOGED_ON = 13;
-    private static final int doLog__INVALID_USER_PASS = 14;
-    private static final int doLog__OTHER = 15;
-    /**
-     * *** end return codes for do Logon *****
-     */
+    private static enum LogOnResult {
+        OK ,
+        LOGGED_ON,
+        INVALID_USER_PASS,
+        OTHER_ERROR
+    }
 
     private static final String SSID_REGEX = "^\"Fanshawe (Students|Employees)\"$";
     private static final URI TEST_URI;
@@ -107,7 +108,7 @@ public class LogOnRequest extends AsyncTask<String, Integer, Integer> {
      * @throws ClientProtocolException
      * @throws IOException
      */
-    private static int checkTestURI() throws ClientProtocolException, IOException {
+    private static TestUriStatus checkTestURI() throws ClientProtocolException, IOException {
 
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(TEST_URI);
@@ -120,21 +121,21 @@ public class LogOnRequest extends AsyncTask<String, Integer, Integer> {
 
             // check if we got a redirect
             if (sResponse.contains("<TITLE>Success</TITLE>")) {
-                return testUri_CONNECTION_OK;
+                return TestUriStatus.testUri_CONNECTION_OK;
             } else if (sResponse.contains("<TITLE> Web Authentication Redirect</TITLE>") && sResponse.contains("URL=https://virtualwireless.fanshawec.ca/login.html?")) { // DETECT
                 // FANSHAWE
-                return testUri_FANSHAWE_REDIRECT;
+                return TestUriStatus.testUri_FANSHAWE_REDIRECT;
             }
-            return testUri_OTHER_REDIRECT;
+            return TestUriStatus.testUri_OTHER_REDIRECT;
         }
-        return testUri_NULL_ENTITY;
+        return TestUriStatus.testUri_NULL_ENTITY;
     }
 
     /**
      * TODO
      */
     @Override
-    protected Integer doInBackground(String... args) {
+    protected Status doInBackground(String... args) {
         if (Tools.isDebugLevelSet(CONSTANTS.DEBUG_THREAD_LONGER)) {
             try {
                 Thread.sleep(5000);
@@ -146,13 +147,13 @@ public class LogOnRequest extends AsyncTask<String, Integer, Integer> {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         String ssid = wifiInfo.getSSID();
         if (wifiInfo == null || ssid == null) {
-            return RETURN_NO_WIFI;
+            return Status.RETURN_NO_WIFI;
         }
 
         // Check the ssid
         if (!ssid.matches(SSID_REGEX)) {
             Log.d(TAG, "ssid: |" + ssid + "| regex: |" + SSID_REGEX + "|");
-            return RETURN_NOT_AT_FANSHAWE;
+            return Status.RETURN_NOT_AT_FANSHAWE;
         }
         if (true) { // TODO if checking MAC
             byte[] macConnected = new byte[6];
@@ -164,37 +165,37 @@ public class LogOnRequest extends AsyncTask<String, Integer, Integer> {
         }
         try {
 
-            if (checkTestURI() != testUri_CONNECTION_OK) {
+            if (checkTestURI() != TestUriStatus.testUri_CONNECTION_OK) {
                 switch (doLogon()) {
-                    case doLog__OK:
+                    case OK:
                         break;
-                    case doLog__LOGED_ON:
-                    case doLog__OTHER:
-                        return RETURN_UNABLE_TO_LOGIN;
-                    case doLog__INVALID_USER_PASS:
-                        return RETURN_INVALID_CRED;
+                    case LOGGED_ON:
+                    case OTHER_ERROR:
+                        return Status.RETURN_UNABLE_TO_LOGIN;
+                    case INVALID_USER_PASS:
+                        return Status.RETURN_INVALID_CRED;
                 }
                 switch (checkTestURI()) {
                     case testUri_CONNECTION_OK:
-                        return RETURN_OK;
+                        return Status.RETURN_OK;
                     case testUri_FANSHAWE_REDIRECT:
                     case testUri_OTHER_REDIRECT:
                     case testUri_NULL_ENTITY:
-                        return RETURN_UNABLE_TO_LOGIN;
+                        return Status.RETURN_UNABLE_TO_LOGIN;
                 }
             }
 
-            return RETURN_UNABLE_TO_LOGIN;
+            return Status.RETURN_UNABLE_TO_LOGIN;
         } catch (ClientProtocolException e) {
-            return RETURN_CONNECTION_ERROR;
+            return Status.RETURN_CONNECTION_ERROR;
         } catch (IOException e) {
-            return RETURN_CONNECTION_ERROR;
+            return Status.RETURN_CONNECTION_ERROR;
         } catch (URISyntaxException e) {
             // this wont happen cause all the uri's are hard coded for now
         } catch (Exception e) {
-            return RETURN_USPECIFIED_ERROR;
+            return Status.RETURN_USPECIFIED_ERROR;
         }
-        return RETURN_USPECIFIED_ERROR;
+        return Status.RETURN_USPECIFIED_ERROR;
     }
 
     /**
@@ -202,7 +203,7 @@ public class LogOnRequest extends AsyncTask<String, Integer, Integer> {
      * @throws ClientProtocolException
      * @throws IOException
      */
-    private int doLogon() throws URISyntaxException, IOException {
+    private LogOnResult doLogon() throws URISyntaxException, IOException {
 
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         {
@@ -221,22 +222,22 @@ public class LogOnRequest extends AsyncTask<String, Integer, Integer> {
         HttpEntity entity = client.execute(post).getEntity();
         String response = EntityUtils.toString(entity);
         if (response.contains("You are already logged in. No further action is required on your part.")) {
-            return doLog__LOGED_ON;
+            return LogOnResult.LOGGED_ON;
         }
         if (response.contains("<input type=\"hidden\" name=\"err_flag\" size=\"16\" maxlength=\"15\" value=\"1\">")) {
-            return doLog__INVALID_USER_PASS;
+            return LogOnResult.INVALID_USER_PASS;
         }
         if (response.contains("<title>Logged In</title>")) {
-            return doLog__OK;
+            return LogOnResult.OK;
         }
-        return doLog__OTHER;
+        return LogOnResult.OTHER_ERROR;
     }
 
     /**
      * TODO
      */
     @Override
-    protected void onPostExecute(Integer result) {
+    protected void onPostExecute(Status result) {
         if (cb != null)
             cb.loggedOn(result);
     }

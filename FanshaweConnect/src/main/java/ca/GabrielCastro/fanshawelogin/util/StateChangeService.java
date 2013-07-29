@@ -52,7 +52,7 @@ public class StateChangeService extends IntentService implements CONSTANTS {
 
         LogOnRequest r = new LogOnRequest(null, user, pass, context);
 
-        int result = -1;
+        LogOnRequest.Status result = LogOnRequest.Status.RETURN_USPECIFIED_ERROR;
 
         try {
             result = r.execute().get();
@@ -65,20 +65,20 @@ public class StateChangeService extends IntentService implements CONSTANTS {
         Notification note = new Notification(R.drawable.ic_launcher, "Connected", System.currentTimeMillis());
 
         switch (result) {
-            case LogOnRequest.RETURN_OK:
+            case RETURN_OK:
                 note.setLatestEventInfo(context, "Logged in",
                         "you where automatically connected to Fanshawe's wifi using the stored credentials", null);
                 notificationManager.notify(0, note);
                 break;
-            case LogOnRequest.RETURN_INVALID_CRED:
+            case RETURN_INVALID_CRED:
                 note.setLatestEventInfo(context, "Error", "Your Credentials appear to be broken, or maybe we're not at Fanshawe", null);
                 notificationManager.notify(0, note);
                 break;
-            case LogOnRequest.RETURN_NOT_AT_FANSHAWE:
-            case LogOnRequest.RETURN_AT_FANSHAWE_OK:
-            case LogOnRequest.RETURN_UNABLE_TO_LOGIN:
-            case LogOnRequest.RETURN_CONNECTION_ERROR:
-            case LogOnRequest.RETURN_USPECIFIED_ERROR:
+            case RETURN_NOT_AT_FANSHAWE:
+            case RETURN_AT_FANSHAWE_OK:
+            case RETURN_UNABLE_TO_LOGIN:
+            case RETURN_CONNECTION_ERROR:
+            case RETURN_USPECIFIED_ERROR:
         }
     }
 

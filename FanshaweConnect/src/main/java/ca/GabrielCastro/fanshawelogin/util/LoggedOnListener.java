@@ -2,6 +2,6 @@ package ca.GabrielCastro.fanshawelogin.util;
 
 public interface LoggedOnListener {
 
-	void loggedOn(Integer result);
+	void loggedOn(LogOnRequest.Status result);
 
 }
