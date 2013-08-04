@@ -1,1 +1,1 @@
-include ':FanshaweConnect', ':libraries:appcompat'
+include ':FanshaweConnect', ':libraries:appcompat', ':libraries:ntlm'

@@ -1,0 +1,3 @@
+[submodule "libraries/ntlm"]
+	path = libraries/ntlm
+	url = git@github.com:masconsult/android-ntlm.git

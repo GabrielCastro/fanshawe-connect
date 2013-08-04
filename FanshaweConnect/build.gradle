@@ -16,6 +16,7 @@ dependencies {
     compile 'com.android.support:support-v4:18.0.+'
     compile "com.android.support:appcompat-v7:18.0.+"
     compile "org.apache.commons:commons-lang3:3.1"
+    compile project(':libraries:ntlm')
 }
 
 android {
