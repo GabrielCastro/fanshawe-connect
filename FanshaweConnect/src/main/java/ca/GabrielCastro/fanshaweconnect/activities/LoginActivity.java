@@ -16,7 +16,7 @@ import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 
 public class LoginActivity extends ActionBarActivity
-        implements LoginFragment.CallBacks, ProgressDisplayFragment.Callbacks {
+        implements LoginFragment.CallBacks, ProgressDisplayFragment.Callbacks, CONSTANTS {
 
     private static final String FRAG_TAG_LOGIN = "LoginActivity.LoginFragment";
     private static final String FRAG_TAG_PROGRESS = "LoginActivity.Progress";
@@ -27,6 +27,14 @@ public class LoginActivity extends ActionBarActivity
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String[] userFirstLastName = new String[2];
+        userFirstLastName[0] = getSecurePreferences().getString(KEY_FIRST_NAME, null);
+        userFirstLastName[1] = getSecurePreferences().getString(KEY_LAST_NAME, null);
+        if (userFirstLastName[0] != null && userFirstLastName[1] != null) {
+            startMain(userFirstLastName);
+            return;
+        }
 
         mLoginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag(FRAG_TAG_LOGIN);
         mProgressFragment = getSupportFragmentManager().findFragmentByTag(FRAG_TAG_PROGRESS);
@@ -56,12 +64,20 @@ public class LoginActivity extends ActionBarActivity
         imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
 
-    @Override
-    public void success(String[] userNameLastName) {
+    private void startMain(String[] userNameLastName) {
         if (!isFinishing()) {
             startActivity(new Intent(this, MainActivity.class).putExtra("a", userNameLastName));
             finish();
         }
+    }
+
+    @Override
+    public void success(String[] userNameLastName) {
+        getSecurePreferences().edit()
+                .putString(KEY_FIRST_NAME, userNameLastName[0])
+                .putString(KEY_LAST_NAME, userNameLastName[1])
+                .commit();
+        startMain(userNameLastName);
     }
 
     @Override

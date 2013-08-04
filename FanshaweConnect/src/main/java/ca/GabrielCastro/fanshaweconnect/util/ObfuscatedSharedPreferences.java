@@ -231,7 +231,7 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
     public class ObfuscatedEditor implements SharedPreferences.Editor {
         protected SharedPreferences.Editor delegate;
 
-        public ObfuscatedEditor() {
+        private ObfuscatedEditor() {
             this.delegate = ObfuscatedSharedPreferences.this.delegate.edit();
         }
 

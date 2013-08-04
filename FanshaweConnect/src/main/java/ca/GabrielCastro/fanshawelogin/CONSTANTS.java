@@ -3,9 +3,15 @@ package ca.GabrielCastro.fanshawelogin;
 public interface CONSTANTS {
 
 	public static final String PREFS_NAME = "FanshaweAutoLogOn";
-	public static final String USER_KEY = "userKey";
-	public static final String PASSWORD_KEY = "passKey";
-	public static final String LAST_VERSION_KEY = "lastVersionRan";
+
+	public static final String KEY_USERNAME   = "userKey";
+	public static final String KEY_PASSWD     = "passKey";
+	public static final String KEY_FIRST_NAME = "first_name";
+	public static final String KEY_LAST_NAME  = "last_name";
+
+    String KEY_AUTO_CONNECT = "auto_connect_wifi";
+
+    public static final String LAST_VERSION_KEY = "lastVersionRan";
 	public static final String KEY_PERSON = "thePeresonsName";
 	public static final float MAJOR_MINOR = 0.0F;
 
@@ -25,6 +31,5 @@ public interface CONSTANTS {
 
 	public static byte DEBUG_LEVEL = (DEBUG_ALL_HTTP
 			| DEBUG_ALL_CON_STATE_CHANGE | DEBUG_ALL_LOGONS | DEBUG_THREAD_LONGER);// 0000
-																					// 1111
 
 }

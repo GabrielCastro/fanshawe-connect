@@ -166,8 +166,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
             FolAuthResponse response = super.doInBackground(params);
             SharedPreferences p = mCallbacks.getSecurePreferences();
             p.edit()
-                    .putString(CONSTANTS.USER_KEY, userName)
-                    .putString(CONSTANTS.PASSWORD_KEY, password)
+                    .putString(CONSTANTS.KEY_USERNAME, userName)
+                    .putString(CONSTANTS.KEY_PASSWD, password)
                     .commit();
             return response;
         }

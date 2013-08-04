@@ -43,8 +43,8 @@ public class StateChangeService extends IntentService implements CONSTANTS {
         }
 
         SharedPreferences prefs = ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
-        user = prefs.getString(CONSTANTS.USER_KEY, "");
-        pass = prefs.getString(CONSTANTS.PASSWORD_KEY, "");
+        user = prefs.getString(CONSTANTS.KEY_USERNAME, "");
+        pass = prefs.getString(CONSTANTS.KEY_PASSWD, "");
         if (user == "" || pass == "") {
             Log.d(TAG, "no userpass");
             return;
