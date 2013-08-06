@@ -20,7 +20,7 @@
 
 <resources>
 
-    <string name="app_name">FanshaweConnect</string>
+    <string name="app_name">Fanshawe Connect</string>
 
     <string-array name="vaild_domains">
         <item>\@FanshaweOnline.ca</item>

@@ -39,8 +39,10 @@
                 android:layout_gravity="left|center_vertical"
                 android:text="@string/welcome"
                 android:textColor="#c00"
-                android:textSize="48sp"
-                tf:type_face="Roboto-Thin.ttf"/>
+                android:textSize="50sp"
+                tf:type_face="Roboto-Thin.ttf"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"/>
 
         <ca.GabrielCastro.fanshaweconnect.ui.TypeFaceTextView
                 android:id="@+id/login_extra_text"
@@ -52,7 +54,7 @@
                 tf:type_face="Roboto-Condensed-Regular.ttf"
                 android:layout_marginTop="-8dp"
                 android:layout_marginLeft="32dp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
         <RelativeLayout
                 android:layout_width="match_parent"

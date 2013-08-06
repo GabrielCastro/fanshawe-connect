@@ -21,6 +21,7 @@ package ca.GabrielCastro.fanshaweconnect.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -49,6 +50,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     private Button mGoToFOL;
     private Button mGoToEmail;
     private SharedPreferences mPrefs;
+    private CheckCredentials.FolAuthResponse mLastAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,8 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         mAutoConnectSetting.setOnCheckedChangeListener(this);
         mGoToFOL.setOnClickListener(this);
         mGoToEmail.setOnClickListener(this);
+        mGoToFOL.setTextColor(Color.GRAY);
+        mGoToEmail.setTextColor(Color.GRAY);
 
         mPrefs = ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
 
@@ -96,10 +100,18 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.go_fol:
-                launchFOL(GetSSO.Destination.FOL);
+                if (mLastAuth == CheckCredentials.FolAuthResponse.RETURN_OK) {
+                    launchFOL(GetSSO.Destination.FOL);
+                } else {
+                    Toast.makeText(this, "Can't do that until we connect", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.go_email:
-                launchFOL(GetSSO.Destination.EMAIL);
+                if (mLastAuth == CheckCredentials.FolAuthResponse.RETURN_OK) {
+                    launchFOL(GetSSO.Destination.EMAIL);
+                } else {
+                    Toast.makeText(this, "Can't do that until we connect", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -148,19 +160,25 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
 
     @Override
     public void credentialsChecked(CheckCredentials.FolAuthResponse result, String[] name) {
+        mLastAuth = result;
+        int color = Color.BLACK;
         switch (result) {
             case RETURN_ERROR:
             case RETURN_EXCEPTION:
                 mConnectingText.setText("Can't Connect");
                 mConnectingText.setTextColor(getResources().getColor(R.color.fanshawe_red));
+                color = Color.GRAY;
                 break;
             case RETURN_INVALID:
                 logout(LoginActivity.Reasons.INLAID_PASS);
-                break;
+                return;
             case RETURN_OK:
                 mConnectingText.setText(R.string.connected);
                 mConnectingText.setTextColor(getResources().getColor(R.color.holo_green));
+                color = Color.BLACK;
                 break;
         }
+        mGoToFOL.setTextColor(color);
+        mGoToEmail.setTextColor(color);
     }
 }
