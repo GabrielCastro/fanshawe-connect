@@ -23,7 +23,7 @@ import ca.GabrielCastro.fanshaweconnect.App;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import eu.masconsult.android_ntlm.NTLMSchemeFactory;
 
-public class GetSSO extends AsyncTask<Void,Void,Uri> {
+public class GetSSO {
 
     public static enum Destination {
         FOL,
@@ -34,9 +34,8 @@ public class GetSSO extends AsyncTask<Void,Void,Uri> {
     private static final String TAG = "FanConnect[getSSO]";
     private final String requestURL;
     private final String user, pass;
-    private final OnComplete cb;
 
-    public GetSSO(Destination destination, String user, String pass, OnComplete cb) {
+    public GetSSO(Destination destination, String user, String pass) {
         switch (destination) {
             case FOL:
                 requestURL = "https://portal.myfanshawe.ca/_layouts/Fanshawe/fol_pass_thru.aspx";
@@ -49,12 +48,10 @@ public class GetSSO extends AsyncTask<Void,Void,Uri> {
         }
         this.user = user;
         this.pass = pass;
-        this.cb = cb;
     }
 
 
-    @Override
-    protected Uri doInBackground(Void... params) {
+    protected Uri doGetSSO() {
 
         if (user == null || pass == null) {
             return null;
@@ -110,18 +107,7 @@ public class GetSSO extends AsyncTask<Void,Void,Uri> {
         return Uri.parse(ssoUrl[0]);
     }
 
-    @Override
-    protected void onPostExecute(Uri uri) {
-        if (uri == null) {
-            cb.onFailed();
-        } else {
-            cb.onGotSSO(uri);
-        }
-    }
 
-    public static interface OnComplete {
-        public void onGotSSO(Uri ssoUri);
-        public void onFailed();
-    }
+
 
 }

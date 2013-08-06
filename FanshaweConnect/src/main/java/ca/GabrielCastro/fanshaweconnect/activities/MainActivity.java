@@ -16,12 +16,13 @@ import android.widget.Toast;
 
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.util.GetSSO;
+import ca.GabrielCastro.fanshaweconnect.util.GetSSOTask;
 import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
-public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSO.OnComplete, MenuItem.OnMenuItemClickListener, OnCredentialsChecked {
+public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSOTask.OnComplete, MenuItem.OnMenuItemClickListener, OnCredentialsChecked {
 
     public static final String TAG = "FanConnect";
     private CheckBox mAutoConnectSetting;
@@ -85,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
             Toast.makeText(this, "unable to read username from settings", Toast.LENGTH_SHORT).show();
             return;
         }
-        GetSSO getSSO = new GetSSO(destination, user, pass, this);
+        GetSSOTask getSSO = new GetSSOTask(destination, user, pass, this);
         getSSO.execute((Void) null);
     }
 
