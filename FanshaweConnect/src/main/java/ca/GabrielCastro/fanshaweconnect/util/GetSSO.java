@@ -107,7 +107,4 @@ public class GetSSO {
         return Uri.parse(ssoUrl[0]);
     }
 
-
-
-
 }

@@ -4,7 +4,7 @@ package ca.GabrielCastro.fanshaweconnect.util;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-public class GetSSOTask extends AsyncTask<Void, Void, Uri> {
+public class GetSSOTask extends SupportASyncTask<Void, Void, Uri> {
 
     private final GetSSO delegate;
     private OnComplete cb;
