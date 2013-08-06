@@ -5,6 +5,8 @@ import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -14,6 +16,7 @@ import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -21,7 +24,9 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.GabrielCastro.fanshaweconnect.App;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
+import eu.masconsult.android_ntlm.NTLMSchemeFactory;
 
 public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.FolAuthResponse> {
 
@@ -47,20 +52,19 @@ public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.Fol
     @Override
     protected FolAuthResponse doInBackground(Void... params) {
         try {
-            HttpClient client = new DefaultHttpClient();
+            DefaultHttpClient client = new DefaultHttpClient();
             client.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.TRUE);
-            HttpPost post = new HttpPost("https://www.fanshaweonline.ca/d2l/lp/auth/login/login.d2l");
-            List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-            {
-                pairs.add(new BasicNameValuePair("ostype", ""));
-                pairs.add(new BasicNameValuePair("btype", ""));
-                pairs.add(new BasicNameValuePair("bversion", ""));
-                pairs.add(new BasicNameValuePair("userName", this.userName));
-                pairs.add(new BasicNameValuePair("password", this.password));
-                pairs.add(new BasicNameValuePair("Login", "Login"));
-            }
-            post.setEntity(new UrlEncodedFormEntity(pairs));
+            client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, App.userAgent);
+            // register ntlm auth scheme
+            client.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());
+            client.getCredentialsProvider().setCredentials(
+                    // Limit the credentials only to the specified domain and port
+                    new AuthScope("portal.myfanshawe.ca", -1),
+                    // Specify credentials, most of the time only user/pass is needed
+                    new NTCredentials(userName, password, "", "")
+            );
 
+            HttpPost post = new HttpPost("https://portal.myfanshawe.ca/_layouts/Fanshawe/fol_pass_thru.aspx");
             HttpContext localContext = new BasicHttpContext();
             // Bind custom cookie store to the local context
             localContext.setAttribute(ClientContext.COOKIE_STORE, new BasicCookieStore());
