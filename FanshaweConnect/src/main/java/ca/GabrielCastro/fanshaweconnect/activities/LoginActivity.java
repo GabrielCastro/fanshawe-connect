@@ -24,6 +24,7 @@ public class LoginActivity extends ActionBarActivity
         INIT,
         USER_LOGGED_OUT,
         INLAID_PASS,
+        CORRUPT_PREF
     }
 
 
@@ -45,13 +46,6 @@ public class LoginActivity extends ActionBarActivity
             startMain(userFirstLastName);
             return;
         }
-        {
-            String name = getIntent().getStringExtra(EXTRA_REASON);
-            if (name == null) {
-                name = Reasons.INIT.name();
-            }
-            mReason = Reasons.valueOf(name);
-        }
 
         mLoginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag(FRAG_TAG_LOGIN);
         mProgressFragment = getSupportFragmentManager().findFragmentByTag(FRAG_TAG_PROGRESS);
@@ -67,6 +61,17 @@ public class LoginActivity extends ActionBarActivity
         }
         ft.commit();
 
+        getReasonFromIntent();
+
+    }
+
+    private void getReasonFromIntent() {
+        String name = getIntent().getStringExtra(EXTRA_REASON);
+        if (name == null) {
+            name = Reasons.INIT.name();
+        }
+        mReason = Reasons.valueOf(name);
+        mLoginFragment.setReason(mReason);
     }
 
     @Override

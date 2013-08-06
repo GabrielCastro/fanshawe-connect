@@ -17,7 +17,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
+            android:text="@string/login_progress_connecting"
             android:id="@+id/textView"
             android:gravity="center_horizontal"/>
 </LinearLayout>

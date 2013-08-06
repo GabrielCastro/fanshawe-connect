@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import ca.GabrielCastro.fanshaweconnect.R;
+import ca.GabrielCastro.fanshaweconnect.activities.LoginActivity;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 
@@ -25,12 +26,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
     private CallBacks mCallbacks;
     private LoginTask mTask;
     private View mView;
+    private TextView mWelcomeText;
+    private TextView mExtraText;
     private EditText mUserName;
     private String mUserText;
     private EditText mPassword;
     private String mPasswordText;
     private Button mLoginButton;
     private Spinner mDomainSpinner;
+    private LoginActivity.Reasons mReason = LoginActivity.Reasons.INIT;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -60,6 +64,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
             ((ViewGroup) mView.getParent()).removeView(mView);
         }
         setRetainInstance(getParentFragment() == null);
+        mWelcomeText = (TextView) mView.findViewById(R.id.welcom_text);
+        mExtraText = (TextView) mView.findViewById(R.id.login_extra_text);
         mUserName = (EditText) mView.findViewById(R.id.user_name);
         mPassword = (EditText) mView.findViewById(R.id.password);
         mLoginButton = (Button) mView.findViewById(R.id.sign_in_button);
@@ -70,6 +76,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
         mPassword.setOnEditorActionListener(this);
         ArrayAdapter adapter = (ArrayAdapter) mDomainSpinner.getAdapter();
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        setReason(mReason);
 
 
         return mView;
@@ -134,6 +141,30 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
             case RETURN_EXCEPTION:
                 mPassword.setError("unable to connect to FOL");
                 mPassword.requestFocus();
+                break;
+        }
+    }
+
+    public void setReason(LoginActivity.Reasons mReason) {
+        this.mReason = mReason;
+        if (mExtraText == null) {
+            return;
+        }
+        switch (mReason) {
+            case INIT:
+            case USER_LOGGED_OUT:
+                mWelcomeText.setText(R.string.welcome);
+                mExtraText.setVisibility(View.GONE);
+                break;
+            case INLAID_PASS:
+                mWelcomeText.setText(R.string.oops);
+                mExtraText.setVisibility(View.VISIBLE);
+                mExtraText.setText(R.string.extra_text_changed_cred);
+                break;
+            case CORRUPT_PREF:
+                mWelcomeText.setText(R.string.oops);
+                mExtraText.setVisibility(View.VISIBLE);
+                mExtraText.setText(R.string.extra_text_corrupt_pref);
                 break;
         }
     }

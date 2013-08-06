@@ -13,21 +13,32 @@
             >
 
 
-        <view
+        <ca.GabrielCastro.fanshaweconnect.ui.TypeFaceTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                class="ca.GabrielCastro.fanshaweconnect.ui.TypeFaceTextView"
-                android:id="@+id/view"
+                android:id="@+id/welcom_text"
                 android:layout_gravity="left|center_vertical"
-                android:text="Welcome"
+                android:text="@string/welcome"
                 android:textColor="#c00"
                 android:textSize="48sp"
-                tf:type_face="Roboto-Thin.ttf"
-                android:paddingBottom="32dp"/>
+                tf:type_face="Roboto-Thin.ttf"/>
+
+        <ca.GabrielCastro.fanshaweconnect.ui.TypeFaceTextView
+                android:id="@+id/login_extra_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/connected"
+                android:text="@string/extra_text_changed_cred"
+                android:textSize="18sp"
+                tf:type_face="Roboto-Condensed-Regular.ttf"
+                android:layout_marginTop="-8dp"
+                android:layout_marginLeft="32dp"
+                android:visibility="gone"/>
 
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp">
 
 
             <Spinner

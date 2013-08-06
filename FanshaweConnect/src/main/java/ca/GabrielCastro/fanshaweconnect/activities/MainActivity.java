@@ -25,6 +25,7 @@ import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSOTask.OnComplete, MenuItem.OnMenuItemClickListener, OnCredentialsChecked {
 
     public static final String TAG = "FanConnect";
+    private TextView mConnectingText;
     private CheckBox mAutoConnectSetting;
     private Button mGoToFOL;
     private Button mGoToEmail;
@@ -36,12 +37,15 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         setContentView(R.layout.activity_main);
 
         String[] userPass = getIntent().getExtras().getStringArray("a");
-        ((TextView) findViewById(R.id.hello_world)).setText(getString(R.string.welcome, userPass[0], userPass[1]));
+        ((TextView) findViewById(R.id.hello_world)).setText(getString(R.string.person_name, userPass[0], userPass[1]));
 
+        mConnectingText = (TextView) findViewById(R.id.connected);
         mAutoConnectSetting = (CheckBox) findViewById(R.id.wifi_check);
         mGoToFOL = (Button) findViewById(R.id.go_fol);
         mGoToEmail = (Button) findViewById(R.id.go_email);
 
+        mConnectingText.setText(R.string.login_progress_connecting);
+        mConnectingText.setTextColor(getResources().getColor(R.color.holo_yellow));
         mAutoConnectSetting.setOnCheckedChangeListener(this);
         mGoToFOL.setOnClickListener(this);
         mGoToEmail.setOnClickListener(this);
@@ -50,8 +54,10 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
 
         String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
         String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
-        if (user == null || pass == null) {
+        if (user != null && pass != null) {
             new CheckCredentials(user, pass, this).execute();
+        } else {
+            logout(LoginActivity.Reasons.CORRUPT_PREF);
         }
     }
 
@@ -83,11 +89,11 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
         String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
         if (user == null || pass == null) {
-            Toast.makeText(this, "unable to read username from settings", Toast.LENGTH_SHORT).show();
+            logout(LoginActivity.Reasons.CORRUPT_PREF);
             return;
         }
         GetSSOTask getSSO = new GetSSOTask(destination, user, pass, this);
-        getSSO.execute((Void) null);
+        getSSO.executeOnPool((Void) null);
     }
 
     @Override
@@ -123,8 +129,19 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
 
     @Override
     public void credentialsChecked(CheckCredentials.FolAuthResponse result, String[] name) {
-        if (result == CheckCredentials.FolAuthResponse.RETURN_INVALID) {
-            logout(LoginActivity.Reasons.INLAID_PASS);
+        switch (result) {
+            case RETURN_ERROR:
+            case RETURN_EXCEPTION:
+                mConnectingText.setText("Can't Connect");
+                mConnectingText.setTextColor(getResources().getColor(R.color.fanshawe_red));
+                break;
+            case RETURN_INVALID:
+                logout(LoginActivity.Reasons.INLAID_PASS);
+                break;
+            case RETURN_OK:
+                mConnectingText.setText(R.string.connected);
+                mConnectingText.setTextColor(getResources().getColor(R.color.holo_green));
+                break;
         }
     }
 }

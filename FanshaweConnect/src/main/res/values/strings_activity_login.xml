@@ -15,4 +15,14 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+
+    <string name="login_progress_connecting">Connecting&#8230;</string>
+
+    <string name="welcome">Welcome</string>
+
+    <string name="oops">Oops...</string>
+
+    <string name="extra_text_changed_cred">It looks like your account password has changed</string>
+    <string name="extra_text_corrupt_pref">Something on your device has changed.\nFor your account safety you have been lodgged out of Fanshawe Connect</string>
+
 </resources>

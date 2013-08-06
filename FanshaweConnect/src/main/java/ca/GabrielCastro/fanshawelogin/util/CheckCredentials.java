@@ -70,7 +70,7 @@ public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.Fol
             localContext.setAttribute(ClientContext.COOKIE_STORE, new BasicCookieStore());
 
             HttpResponse response = client.execute(post, localContext);
-            if (!isLoggedIn(EntityUtils.toString(response.getEntity()))) {
+            if (!isLoggedIn(response)) {
                 return FolAuthResponse.RETURN_INVALID;
             }
 
@@ -83,8 +83,8 @@ public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.Fol
         }
     }
 
-    private boolean isLoggedIn(String content) {
-        return !content.contains("alert( 'Invalid Username\\/Password.\\n\\nYou will be taken back to the login page.' );");
+    private boolean isLoggedIn(HttpResponse content) {
+        return content.getStatusLine().getStatusCode() == 200;
     }
 
     private FolAuthResponse doParseContent(String content) {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="fanshawe_red">#C00</color>
+    <color name="holo_green">#9C0</color>
+    <color name="holo_yellow">#fb3</color>
+    <color name="transparent">#0fff</color>
+
+</resources>
