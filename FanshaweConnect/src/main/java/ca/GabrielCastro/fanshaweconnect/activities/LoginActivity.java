@@ -1,5 +1,6 @@
 package ca.GabrielCastro.fanshaweconnect.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,11 +19,20 @@ import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 public class LoginActivity extends ActionBarActivity
         implements LoginFragment.CallBacks, ProgressDisplayFragment.Callbacks, CONSTANTS {
 
+    private static final String EXTRA_REASON = "LoginActivity.extra_reason";
+    public static enum Reasons {
+        INIT,
+        USER_LOGGED_OUT,
+        INLAID_PASS,
+    }
+
+
     private static final String FRAG_TAG_LOGIN = "LoginActivity.LoginFragment";
     private static final String FRAG_TAG_PROGRESS = "LoginActivity.Progress";
 
     LoginFragment mLoginFragment;
     Fragment mProgressFragment;
+    private Reasons mReason = Reasons.INIT;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,13 @@ public class LoginActivity extends ActionBarActivity
         if (userFirstLastName[0] != null && userFirstLastName[1] != null) {
             startMain(userFirstLastName);
             return;
+        }
+        {
+            String name = getIntent().getStringExtra(EXTRA_REASON);
+            if (name == null) {
+                name = Reasons.INIT.name();
+            }
+            mReason = Reasons.valueOf(name);
         }
 
         mLoginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag(FRAG_TAG_LOGIN);
@@ -95,4 +112,8 @@ public class LoginActivity extends ActionBarActivity
         return ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
     }
 
+    public static Intent getIntent(Context context, Reasons reason) {
+        return new Intent(context, LoginActivity.class)
+                .putExtra(EXTRA_REASON, reason.name());
+    }
 }

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,8 +18,10 @@ import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.util.GetSSO;
 import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
+import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
+import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
-public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSO.OnComplete {
+public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSO.OnComplete, MenuItem.OnMenuItemClickListener, OnCredentialsChecked {
 
     public static final String TAG = "FanConnect";
     private CheckBox mAutoConnectSetting;
@@ -43,6 +47,18 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
 
         mPrefs = ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
 
+        String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
+        String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
+        if (user == null || pass == null) {
+            new CheckCredentials(user, pass, this).execute();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.action_logout).setOnMenuItemClickListener(this);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -86,5 +102,28 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     @Override
     public void onFailed() {
         Toast.makeText(this, "get SSO Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                logout(LoginActivity.Reasons.USER_LOGGED_OUT);
+                return true;
+        }
+        return false;
+    }
+
+    private void logout(LoginActivity.Reasons why) {
+        ObfuscatedSharedPreferences.create(MainActivity.this, CONSTANTS.PREFS_NAME).edit().clear().commit();
+        startActivity(LoginActivity.getIntent(this, why));
+        MainActivity.this.finish();
+    }
+
+    @Override
+    public void credentialsChecked(CheckCredentials.FolAuthResponse result, String[] name) {
+        if (result == CheckCredentials.FolAuthResponse.RETURN_INVALID) {
+            logout(LoginActivity.Reasons.INLAID_PASS);
+        }
     }
 }
