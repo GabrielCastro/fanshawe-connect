@@ -21,7 +21,6 @@ package ca.GabrielCastro.fanshaweconnect.util;
 
 
 import android.net.Uri;
-import android.os.AsyncTask;
 
 public class GetSSOTask extends SupportASyncTask<Void, Void, Uri> {
 

@@ -20,7 +20,6 @@
 package ca.GabrielCastro.fanshaweconnect.util;
 
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.http.Header;
@@ -39,7 +38,6 @@ import java.io.IOException;
 import java.net.URI;
 
 import ca.GabrielCastro.fanshaweconnect.App;
-import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import eu.masconsult.android_ntlm.NTLMSchemeFactory;
 
 public class GetSSO {

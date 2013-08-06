@@ -19,7 +19,6 @@
 
 package ca.GabrielCastro.fanshaweconnect;
 
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -35,6 +34,7 @@ public class App extends android.app.Application {
                     "FanshaweConnect/%3$s(%4$s) Mobile";
 
     public static String userAgent = String.format(BASE_USER_AGENT, Build.VERSION.RELEASE, Build.MODEL, "", "");
+
     @Override
     public void onCreate() {
         super.onCreate();

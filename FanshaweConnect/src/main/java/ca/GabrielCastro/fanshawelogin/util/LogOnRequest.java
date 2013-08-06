@@ -60,6 +60,7 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
     }
 
     public static final String TAG = "LogOnRequest";
+
     /**
      * *** begin return codes for test uri *****
      */
@@ -74,7 +75,7 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
      * *** begin return codes for do Logon *****
      */
     private static enum LogOnResult {
-        OK ,
+        OK,
         LOGGED_ON,
         INVALID_USER_PASS,
         OTHER_ERROR
