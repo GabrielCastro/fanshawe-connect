@@ -21,6 +21,9 @@ package ca.GabrielCastro.fanshawelogin.util;
 
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
+/**
+ * Miscellaneous Tools
+ */
 public class Tools {
 
     public static byte[] hexStringToByteArray(String s) {

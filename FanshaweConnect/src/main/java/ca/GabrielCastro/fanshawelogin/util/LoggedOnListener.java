@@ -19,8 +19,16 @@
 
 package ca.GabrielCastro.fanshawelogin.util;
 
+/**
+ * Used by {@link LogOnRequest} to callback to it's caller
+ * @see LogOnRequest
+ */
 public interface LoggedOnListener {
 
+    /**
+     * The Status of the {@link LogOnRequest}
+     * @param result
+     */
     void loggedOn(LogOnRequest.Status result);
 
 }

@@ -29,29 +29,38 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 /**
+ * A class copied from StackOverflow to Check if a device is Rooted
  * @author Kevin Kowalewski
  */
 public class Root {
 
     private static String TAG = Root.class.getName();
 
+    /**
+     * Check weather the device is currently rooted
+     * @return
+     */
     public static boolean isDeviceRooted() {
-        if (checkRootMethod1()) {
+        if (checkRoot_BuildTags()) {
             Log.d(TAG, "WE has root 1");
             return true;
         }
-        if (checkRootMethod2()) {
+        if (checkRoot_SuperUserApk()) {
             Log.d(TAG, "WE has root 2");
             return true;
         }
-        if (checkRootMethod3()) {
+        if (checkRoot_WhichSu()) {
             Log.d(TAG, "WE has root 3");
             return true;
         }
         return false;
     }
 
-    public static boolean checkRootMethod1() {
+    /**
+     * Checks if the current rom is signed with test keys
+     * @return
+     */
+    public static boolean checkRoot_BuildTags() {
         String buildTags = android.os.Build.TAGS;
 
         if (buildTags != null && buildTags.contains("test-keys")) {
@@ -60,7 +69,11 @@ public class Root {
         return false;
     }
 
-    public static boolean checkRootMethod2() {
+    /**
+     * Checks for the presence of SuperUser.apk
+     * @return
+     */
+    public static boolean checkRoot_SuperUserApk() {
         try {
             File file = new File("/system/app/Superuser.apk");
             if (file.exists()) {
@@ -72,7 +85,11 @@ public class Root {
         return false;
     }
 
-    public static boolean checkRootMethod3() {
+    /**
+     * Runs "which su" in a shell to se if we have the binary
+     * @return
+     */
+    public static boolean checkRoot_WhichSu() {
         if (new ExecShell().executeCommand(ExecShell.SHELL_CMD.check_su_binary) != null) {
             return true;
         } else {
@@ -81,6 +98,7 @@ public class Root {
     }
 
     /**
+     * Simple Shell
      * @author Kevin Kowalewski
      */
     public static class ExecShell {

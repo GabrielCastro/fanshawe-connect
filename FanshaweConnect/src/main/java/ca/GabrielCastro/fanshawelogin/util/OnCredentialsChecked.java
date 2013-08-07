@@ -19,8 +19,17 @@
 
 package ca.GabrielCastro.fanshawelogin.util;
 
+/**
+ * Used by {@link CheckCredentials} to send its response to the caller
+ * @see CheckCredentials
+ */
 public interface OnCredentialsChecked {
 
+    /**
+     * Called after an Authentication Attempt
+     * @param result the result of the attempt
+     * @param name the persons name {first, last}
+     */
     void credentialsChecked(CheckCredentials.FolAuthResponse result, String[] name);
 
 }
