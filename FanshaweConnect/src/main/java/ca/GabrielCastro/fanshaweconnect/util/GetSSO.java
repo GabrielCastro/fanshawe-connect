@@ -40,6 +40,9 @@ import java.net.URI;
 import ca.GabrielCastro.fanshaweconnect.App;
 import eu.masconsult.android_ntlm.NTLMSchemeFactory;
 
+/**
+ * Gets Single Sign-On Uri's for FOL from the portal's fol_pass_thru.aspx
+ */
 public class GetSSO {
 
     public static enum Destination {
@@ -52,6 +55,13 @@ public class GetSSO {
     private final String requestURL;
     private final String user, pass;
 
+    /**
+     * Construct a Reusable Object to get SSO Uri's
+     * <br/> note: the password is never transited as we use NTLM Auth
+     * @param destination Where in FOL the link should endup
+     * @param user The username to authenticate
+     * @param pass The password to authenticate
+     */
     public GetSSO(Destination destination, String user, String pass) {
         switch (destination) {
             case FOL:
@@ -67,7 +77,10 @@ public class GetSSO {
         this.pass = pass;
     }
 
-
+    /**
+     * Get's an SSO Uri or null if there are any errors
+     * @return SSO uri or null
+     */
     protected Uri doGetSSO() {
 
         if (user == null || pass == null) {

@@ -22,11 +22,21 @@ package ca.GabrielCastro.fanshaweconnect.util;
 
 import android.net.Uri;
 
+/**
+ * Wraps {@link GetSSO} in an ASyncTask
+ */
 public class GetSSOTask extends SupportASyncTask<Void, Void, Uri> {
 
     private final GetSSO delegate;
     private OnComplete cb;
 
+    /**
+     * @see GetSSO
+     * @param destination Where in FOL the link should endup
+     * @param user The username to authenticate
+     * @param pass The password to authenticate
+     * @param cb The Callback Once we get the Uri or fail
+     */
     public GetSSOTask(GetSSO.Destination destination, String user, String pass, OnComplete cb) {
         delegate = new GetSSO(destination, user, pass);
         this.cb = cb;
@@ -46,9 +56,20 @@ public class GetSSOTask extends SupportASyncTask<Void, Void, Uri> {
         }
     }
 
+    /**
+     * Callback for {@link GetSSOTask}
+     */
     public static interface OnComplete {
+
+        /**
+         * Called when a SSO Uri is successfully Obtained
+         * @param ssoUri
+         */
         public void onGotSSO(Uri ssoUri);
 
+        /**
+         *  Called When the Class fails to get an SSO uri for any reason
+         */
         public void onFailed();
     }
 

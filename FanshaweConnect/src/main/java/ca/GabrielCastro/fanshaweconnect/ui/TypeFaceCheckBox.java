@@ -29,6 +29,11 @@ import java.io.IOException;
 
 import ca.GabrielCastro.fanshaweconnect.R;
 
+/**
+ * An Extension of CheckBox that reads the type_face attribute
+ * from xml and sets it's type face using the value and
+ * {@link Typeface#createFromAsset(android.content.res.AssetManager, String)}
+ */
 public class TypeFaceCheckBox extends CheckBox {
 
     private String typeFace;

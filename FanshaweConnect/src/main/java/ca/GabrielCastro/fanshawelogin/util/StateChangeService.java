@@ -29,8 +29,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import java.util.concurrent.ExecutionException;
-
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
@@ -40,12 +38,17 @@ import ca.GabrielCastro.fanshawelogin.CONSTANTS;
  */
 public class StateChangeService extends IntentService implements CONSTANTS {
 
+    public static final String EXTRA_PARENT_INTENT = "FanConnect.StateChangeService.parentIntent";
     private static final String TAG = "StateChangeService";
 
     private String user, pass;
 
     public StateChangeService() {
         super(TAG);
+    }
+
+    public static Intent intentWithParent(Context context, Intent parent) {
+        return new Intent(context, StateChangeService.class).putExtra(EXTRA_PARENT_INTENT, parent);
     }
 
     @Override

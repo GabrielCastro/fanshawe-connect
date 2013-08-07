@@ -29,6 +29,11 @@ import java.io.IOException;
 
 import ca.GabrielCastro.fanshaweconnect.R;
 
+/**
+ * An Extension of TextView that reads the type_face attribute
+ * from xml and sets it's type face using the value and
+ * {@link Typeface#createFromAsset(android.content.res.AssetManager, String)}
+ */
 public class TypeFaceTextView extends TextView {
 
     private String typeFace;

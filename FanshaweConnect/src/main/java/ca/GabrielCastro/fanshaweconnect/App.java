@@ -24,6 +24,9 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
+/**
+ * The Application Class for the app
+ */
 public class App extends android.app.Application {
 
     private static final String BASE_USER_AGENT =
@@ -44,5 +47,13 @@ public class App extends android.app.Application {
         } catch (PackageManager.NameNotFoundException e) {
             Log.wtf("FanshaweConnect[App]", "Self not found", e);
         }
+    }
+
+    /**
+     * Gets the UserAgent that should be used by all network connections
+     * @return
+     */
+    public static String getUserAgent() {
+        return userAgent;
     }
 }
