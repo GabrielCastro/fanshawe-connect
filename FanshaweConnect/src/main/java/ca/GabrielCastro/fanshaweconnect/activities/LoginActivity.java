@@ -107,7 +107,7 @@ public class LoginActivity extends ActionBarActivity
 
     private void startMain(String[] userNameLastName) {
         if (!isFinishing()) {
-            startActivity(new Intent(this, MainActivity.class).putExtra("a", userNameLastName));
+            startActivity(MainActivity.IntentWithPersonName(this, userNameLastName));
             finish();
         }
     }

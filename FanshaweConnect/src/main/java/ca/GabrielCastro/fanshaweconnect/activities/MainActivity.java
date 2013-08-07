@@ -19,6 +19,7 @@
 
 package ca.GabrielCastro.fanshaweconnect.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -45,6 +46,9 @@ import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSOTask.OnComplete, MenuItem.OnMenuItemClickListener, OnCredentialsChecked {
 
     public static final String TAG = "FanConnect";
+    public static final String EXTRA_PERSON_NAME = "fanshaweconnect.MainActivity.personName";
+
+
     private TextView mConnectingText;
     private CheckBox mAutoConnectSetting;
     private Button mGoToFOL;
@@ -52,12 +56,18 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     private SharedPreferences mPrefs;
     private CheckCredentials.FolAuthResponse mLastAuth;
 
+    public static Intent IntentWithPersonName(Context from, String[] personName) {
+        return new Intent(from, MainActivity.class).putExtra(EXTRA_PERSON_NAME, personName);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String[] userPass = getIntent().getExtras().getStringArray("a");
+        mPrefs = ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
+
+        String[] userPass = getIntent().getExtras().getStringArray(EXTRA_PERSON_NAME);
         ((TextView) findViewById(R.id.hello_world)).setText(getString(R.string.person_name, userPass[0], userPass[1]));
 
         mConnectingText = (TextView) findViewById(R.id.connected);
@@ -67,13 +77,14 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
 
         mConnectingText.setText(R.string.login_progress_connecting);
         mConnectingText.setTextColor(getResources().getColor(R.color.holo_yellow));
+
+        mAutoConnectSetting.setChecked(mPrefs.getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true));
         mAutoConnectSetting.setOnCheckedChangeListener(this);
         mGoToFOL.setOnClickListener(this);
         mGoToEmail.setOnClickListener(this);
         mGoToFOL.setTextColor(Color.GRAY);
         mGoToEmail.setTextColor(Color.GRAY);
 
-        mPrefs = ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
 
         String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
         String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
