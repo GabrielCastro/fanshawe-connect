@@ -46,8 +46,15 @@ import java.util.List;
 
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
+/**
+ * A One Use Request that runs in a Background Thread to Logon to the wireless network,
+ * or reuseable if #doInThisThread is called directly
+ */
 public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status> {
 
+    /**
+     * Contains the possible responses from trying to login
+     */
     public static enum Status {
         RETURN_OK,
         RETURN_NOT_AT_FANSHAWE,
@@ -103,29 +110,27 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
     }
 
     /**
-     * TODO
+     * Constructs a Request Object using a listener that will only be called if Logon
+     * is done in a background thread
      *
-     * @param listener
-     * @param userName
-     * @param password
-     * @param context
-     * @throws URISyntaxException
-     * @throws MalformedURLException
+     * @param listener Where to notify after the logon is complete
+     * @param userName The User name to authenticate with
+     * @param password The Password to authenticate with
+     * @param context Application Context
      */
     public LogOnRequest(LoggedOnListener listener, String userName, String password, Context context) {
 
         this.userName = userName;
         this.password = password;
         this.cb = listener;
-        this.context = context;
+        this.context = context.getApplicationContext();
 
     }
 
     /**
-     * TODO
+     * Checks Apples Test Web site to see if our web traffic is being redirected
      *
-     * @return
-     * @throws ClientProtocolException
+     * @return One of {@link TestUriStatus}
      * @throws IOException
      */
     private static TestUriStatus checkTestURI() throws IOException {
@@ -152,10 +157,30 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
     }
 
     /**
-     * TODO
+     * For AsyncTask behaviour
+     * @see #doInThisThread()
      */
     @Override
     protected Status doInBackground(String... args) {
+        return doInThisThread();
+    }
+
+    /**
+     * The main login logic : <br/>
+     * <p>
+     *  <ul>
+     *      <li> Checks that the device is connected to an SSID matched by {@link #SSID_REGEX}</li>
+     *      <li> TODO : Check the MAC adress against some list</li>
+     *      <li> Checks if The user is logged in by calling {@link #checkTestURI()}</li>
+     *      <li> Attempts to Authenticate the user</li>
+     *      <li> Verifies that Authentication worked</li>
+     *  </ul>
+     * </p>
+     *
+     *
+     * @return one of {@link Status}
+     */
+    public Status doInThisThread() {
         if (Tools.isDebugLevelSet(CONSTANTS.DEBUG_THREAD_LONGER)) {
             try {
                 Thread.sleep(5000);
@@ -165,10 +190,12 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
 
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        String ssid = wifiInfo.getSSID();
-        if (wifiInfo == null || ssid == null) {
+
+        if (wifiInfo == null || wifiInfo.getSSID() == null) {
             return Status.RETURN_NO_WIFI;
         }
+
+        String ssid = wifiInfo.getSSID();
 
         // Check the ssid
         if (!ssid.matches(SSID_REGEX)) {
@@ -208,22 +235,20 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
             return Status.RETURN_UNABLE_TO_LOGIN;
         } catch (IOException e) {
             return Status.RETURN_CONNECTION_ERROR;
-        } catch (URISyntaxException e) {
-            // this wont happen cause all the uri's are hard coded for now
         } catch (Exception e) {
             return Status.RETURN_USPECIFIED_ERROR;
         }
-        return Status.RETURN_USPECIFIED_ERROR;
     }
 
     /**
-     * @return
-     * @throws ClientProtocolException
+     * Sends a logon request to https://virtualwireless.fanshawec.ca/login.html
+     * should only be called AFTER it is confirmed that is was absolutely necessary
+     * @return One of {@link LogOnResult}
      * @throws IOException
      */
-    private LogOnResult doLogon() throws URISyntaxException, IOException {
+    private LogOnResult doLogon() throws IOException {
 
-        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>(8);
         {
             pairs.add(new BasicNameValuePair("buttonClicked", "4"));
             pairs.add(new BasicNameValuePair("err_flag", "0"));
@@ -252,7 +277,7 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
     }
 
     /**
-     * TODO
+     * Used by the ASyncTask Implementation to notify the caller of The Result
      */
     @Override
     protected void onPostExecute(Status result) {
