@@ -19,7 +19,6 @@
 
 package ca.GabrielCastro.fanshawelogin.util;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -37,32 +36,53 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import ca.GabrielCastro.fanshaweconnect.App;
+import ca.GabrielCastro.fanshaweconnect.util.SupportASyncTask;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import eu.masconsult.android_ntlm.NTLMSchemeFactory;
 
-public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.FolAuthResponse> {
-
-    public static enum FolAuthResponse {
-        RETURN_OK,
-        RETURN_INVALID,
-        RETURN_ERROR,
-        RETURN_EXCEPTION
-    }
+/**
+ * A One Use Request that runs in a Background Thread to Verify a UserName/Password,
+ * or reuseable if #doInThisThread is called directly
+ */
+public class CheckCredentials extends SupportASyncTask<Void, Void, CheckCredentials.FolAuthResponse> {
 
     private static final String TAG = "checkCred AsyncTask";
     protected String userName;
     protected String password;
+    protected String[] name = {"", ""};
     private OnCredentialsChecked cb;
-    protected String[] name = {};
 
+    /**
+     * Constructs a request to CheckCredentials with a CallBack that will only
+     * be called if the request is ran in a background thread through {@link #execute(Object[])}
+     * @param userName
+     * @param password
+     * @param cb
+     */
     public CheckCredentials(String userName, String password, OnCredentialsChecked cb) {
         this.userName = userName;
         this.password = password;
         this.cb = cb;
     }
 
+    /**
+     * Used by the ASyncTask implementation to do work in an other thread
+     * @see #doInThisThread()
+     * @param params
+     * @return
+     */
     @Override
     protected FolAuthResponse doInBackground(Void... params) {
+        return doInThisThread();
+    }
+
+    /**
+     * Will attempt to authenticate the user on portal.myfanshawec.ca using NTLM
+     * if that is successful the it will attempt to extract the users real name from FOL
+     * using the portal's SSO fol_pass_thru.aspx
+     * @return One of {@link FolAuthResponse}
+     */
+    public FolAuthResponse doInThisThread() {
         try {
             DefaultHttpClient client = new DefaultHttpClient();
             client.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.TRUE);
@@ -95,10 +115,21 @@ public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.Fol
         }
     }
 
-    private boolean isLoggedIn(HttpResponse content) {
-        return content.getStatusLine().getStatusCode() == 200;
+    /**
+     * Checks the response code and returns true if it is {@code 200}
+     * @param response the response to check
+     * @return true is the status code is 200
+     */
+    private boolean isLoggedIn(HttpResponse response) {
+        return response.getStatusLine().getStatusCode() == 200;
     }
 
+    /**
+     * Extracts the persons name from FOL
+     * @param content the HTML content of the page at {@link CONSTANTS#SECOND_URL}
+     * @return {@link FolAuthResponse#RETURN_OK} if the name was extracted correctly
+     * or {@link FolAuthResponse#RETURN_ERROR} if the name could not be parsed
+     */
     private FolAuthResponse doParseContent(String content) {
         // FirstName:'Gabriel',LastName:'Castro Londono',UserName:
         String nameStart = "FirstName:'";
@@ -114,8 +145,35 @@ public class CheckCredentials extends AsyncTask<Void, Void, CheckCredentials.Fol
         return FolAuthResponse.RETURN_OK;
     }
 
+    /**
+     * Used by the ASyncTask implementation to trigger the callback
+     * @param result
+     */
     @Override
     protected void onPostExecute(FolAuthResponse result) {
-        cb.credentialsChecked(result, this.name);
+        if (cb != null) {
+            cb.credentialsChecked(result, this.name);
+        }
+    }
+
+    /**
+     * Gets the persons name parsed from FOL
+     * if the name has not yet been successfully parsed
+     * two empty strings will be returned
+     *
+     * @return
+     */
+    public String[] getName() {
+        return this.name;
+    }
+
+    /**
+     * Contains all the possible Authentication Responses
+     */
+    public static enum FolAuthResponse {
+        RETURN_OK,
+        RETURN_INVALID,
+        RETURN_ERROR,
+        RETURN_EXCEPTION
     }
 }
