@@ -35,6 +35,9 @@ import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
+/**
+ * The Service in charge of handling Connection state changes
+ */
 public class StateChangeService extends IntentService implements CONSTANTS {
 
     private static final String TAG = "StateChangeService";
@@ -71,20 +74,16 @@ public class StateChangeService extends IntentService implements CONSTANTS {
 
         LogOnRequest r = new LogOnRequest(null, user, pass, context);
 
-        LogOnRequest.Status result = LogOnRequest.Status.RETURN_USPECIFIED_ERROR;
+        LogOnRequest.Status result = r.doInThisThread();
 
-        try {
-            result = r.execute().get();
-            Log.d(TAG, "result was: " + result);
-        } catch (InterruptedException e) {
-        } catch (ExecutionException e) {
-        }
-
+        //TODO use new API and make this cleaner in general
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        //TODO get a better icon
         Notification note = new Notification(R.drawable.ic_launcher, "Connected", System.currentTimeMillis());
 
         switch (result) {
             case RETURN_OK:
+                //TODO resource externalize
                 note.setLatestEventInfo(context, "Logged in",
                         "you where automatically connected to Fanshawe's wifi using the stored credentials", null);
                 notificationManager.notify(0, note);
