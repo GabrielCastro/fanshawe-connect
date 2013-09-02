@@ -16,10 +16,32 @@ protect the device from phishing attacks.
 
 ## FOL Device Authentication
 
-- The application provides direct Single-Sign-On (SSO) links
-into Fanshawe Online and FOL-Email.
+- The application provides direct links
+into your Fanshawe Online and FOL-Email.
 - Your username and password are always encrypted and they are 
 never given to the device or browser.
+
+##  Security
+
+### ObfuscatedSharedPreferences
+
+  Wraps any ````SharedPreference```` object and transperently encrypts all preference values
+  but **NOT the keys**.
+  
+  Values are encrypted using both a constant key which must be changed beore building and
+  by a generated device apecific key. If at anypoint either of the keys are changed either though
+  an application update or by a significant device change the preferences will self destruct and
+  all data will be lost
+  
+### FOL Single-Sign-On (SSO) urls and NTLM
+
+  The [myFanshawe Portal](https://portal.myfanshawe.ca) which in un-utilized by many students provides 
+  SSO urls for FanshaweOnline (FOL) and many other college services. Authentication to myFanshawe is
+  done by NTLM over SSL, FasnshaweConnect takes adventage of this setup by enforcing that communiation
+  is always done over SSL and the users credentials are never transmited in plain text because of the
+  challage-response base nature of NTLM. Further more this allows FanshweCoonect to give SSO urls to the 
+  android intent system so the user can access FOL and their email without ever sending credentials
+  to another application.
 
 ##  Building
 
@@ -35,7 +57,7 @@ git submodule update --init libraries/ntlm/
 
 - Modify some files :
  
- + open ca.GabrielCastro.fanshaweconnect.util.ObfuscateSharedPreferences.java
+ + open ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences.java
  + modify the `SEKRIT` variable by changing the randomly generated Base64 String
 
 - Build using the included gradle wrapper
