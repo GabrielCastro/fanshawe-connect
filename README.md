@@ -39,6 +39,6 @@ git submodule update --init libraries/ntlm/
  + modify the `SEKRIT` variable by changing the randomly generated Base64 String
 
 - Build using the included gradle wrapper
-````
+ ```sh
 ./gradlew build
-````
+```
