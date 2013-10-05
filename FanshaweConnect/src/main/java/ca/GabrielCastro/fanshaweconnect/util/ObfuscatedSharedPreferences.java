@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -68,6 +69,9 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
     private final byte[] SALT;
     private final String saltHash64;
     protected SharedPreferences delegate;
+
+    private final WeakHashMap<OnSharedPreferenceChangeListener, OnSharedPreferenceChangeListener> mDelegateMap
+            = new WeakHashMap<OnSharedPreferenceChangeListener, OnSharedPreferenceChangeListener>();
 
     public ObfuscatedSharedPreferences(Context context, SharedPreferences delegate) {
         this.delegate = delegate;
@@ -214,13 +218,22 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
     }
 
     @Override
-    public void registerOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener onSharedPreferenceChangeListener) {
-        delegate.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+    public void registerOnSharedPreferenceChangeListener(final OnSharedPreferenceChangeListener onSharedPreferenceChangeListener) {
+        OnSharedPreferenceChangeListener delegateListener = new OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                onSharedPreferenceChangeListener.onSharedPreferenceChanged(ObfuscatedSharedPreferences.this, key);
+
+            }
+        };
+        mDelegateMap.put(onSharedPreferenceChangeListener, delegateListener);
+        delegate.registerOnSharedPreferenceChangeListener(delegateListener);
     }
 
     @Override
     public void unregisterOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener onSharedPreferenceChangeListener) {
-        delegate.unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+        delegate.unregisterOnSharedPreferenceChangeListener(mDelegateMap.get(onSharedPreferenceChangeListener));
+        mDelegateMap.remove(onSharedPreferenceChangeListener);
     }
 
     protected String encrypt(String value) {
