@@ -44,10 +44,10 @@ android {
             project.hasProperty('fan_keystorePassword') &&
             project.hasProperty('fan_keystoreAliasPassword')
     ) {
-        android.signingConfigs.release.storeFile = file(ltc_keystoreFile)
-        android.signingConfigs.release.storePassword = ltc_keystorePassword
-        android.signingConfigs.release.keyPassword = ltc_keystoreAliasPassword
-        android.signingConfigs.release.keyAlias = ltc_keystoreAlias
+        android.signingConfigs.release.storeFile = file(fan_keystoreFile)
+        android.signingConfigs.release.storePassword = fan_keystorePassword
+        android.signingConfigs.release.keyPassword = fan_keystoreAliasPassword
+        android.signingConfigs.release.keyAlias = fan_keystoreAlias
     } else {
         android.buildTypes.release.signingConfig = null
     }
