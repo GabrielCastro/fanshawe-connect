@@ -49,7 +49,7 @@ public interface CONSTANTS {
             "&d2l_headingLevel=3" +
             "&d2l_body_type=3";
 
-	public static byte DEBUG_LEVEL = !BuildConfig.DEBUG ? 0 :
+	public static byte DEBUG_LEVEL = !BuildConfig.DEBUG ? (byte) 0 :
             (DEBUG_ALL_HTTP | DEBUG_ALL_CON_STATE_CHANGE | DEBUG_ALL_LOGONS | DEBUG_THREAD_LONGER);
 
 }

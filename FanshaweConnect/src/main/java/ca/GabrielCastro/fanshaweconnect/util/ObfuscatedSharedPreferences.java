@@ -72,13 +72,19 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
     public ObfuscatedSharedPreferences(Context context, SharedPreferences delegate) {
         this.delegate = delegate;
         try {
-            SALT = Settings.Secure.getString(context.getContentResolver(), Settings.System.ANDROID_ID).getBytes(UTF8);
+            PRNGFixes.apply();
+            SALT = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID).getBytes(UTF8);
             saltHash64 = Base64.encodeToString(SHA1(SALT, 5), Base64.DEFAULT);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        if (!saltHash64.equals(delegate.getString(KEY_VERSION, null))) {
-            delegate.edit().clear().putString(KEY_VERSION, saltHash64).commit();
+        boolean shouldClear = false;
+        try {
+            shouldClear = !saltHash64.equals(this.getString(KEY_VERSION, null));
+        } finally {
+            if (shouldClear) {
+                this.edit().clear().commit();
+            }
         }
     }
 
