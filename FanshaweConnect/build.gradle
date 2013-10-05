@@ -21,10 +21,35 @@ dependencies {
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.0.1"
+    buildToolsVersion "18.1.0"
 
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 18
     }
+
+    signingConfigs {
+        release
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    // ~/.gradle/gradle.properties
+    if (
+    project.hasProperty('fan_keystoreFile') &&
+            project.hasProperty('fan_keystorePassword') &&
+            project.hasProperty('fan_keystoreAliasPassword')
+    ) {
+        android.signingConfigs.release.storeFile = file(ltc_keystoreFile)
+        android.signingConfigs.release.storePassword = ltc_keystorePassword
+        android.signingConfigs.release.keyPassword = ltc_keystoreAliasPassword
+        android.signingConfigs.release.keyAlias = ltc_keystoreAlias
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+
 }
