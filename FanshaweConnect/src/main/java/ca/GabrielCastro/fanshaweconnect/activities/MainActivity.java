@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +42,12 @@ import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
-public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSOTask.OnComplete, MenuItem.OnMenuItemClickListener, OnCredentialsChecked {
+public class MainActivity extends BaseActivity implements
+        CompoundButton.OnCheckedChangeListener,
+        View.OnClickListener,
+        GetSSOTask.OnComplete,
+        MenuItem.OnMenuItemClickListener,
+        OnCredentialsChecked {
 
     public static final String TAG = "FanConnect";
     public static final String EXTRA_PERSON_NAME = "fanshaweconnect.MainActivity.personName";

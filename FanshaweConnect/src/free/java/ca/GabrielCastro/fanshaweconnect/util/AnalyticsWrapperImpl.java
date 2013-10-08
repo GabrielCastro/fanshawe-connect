@@ -20,6 +20,37 @@
 package ca.GabrielCastro.fanshaweconnect.util;
 
 
-public class AnalyticsWrapper {
+import android.app.Activity;
+import android.content.Context;
 
+public class AnalyticsWrapperImpl extends AnalyticsWrapper {
+
+    @Override
+    public void activityStart(Activity activity) {
+
+    }
+
+    @Override
+    public void activityStop(Activity activity) {
+
+    }
+
+    @Override
+    public void sendEvent(String category, String action, String label, long value) {
+
+    }
+
+    public static class Timer {
+        public Timer(Context context) {
+        }
+
+        public void start() {
+        }
+
+        public void end() {
+        }
+
+        public void submit() {
+        }
+    }
 }

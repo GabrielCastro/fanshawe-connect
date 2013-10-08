@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.view.inputmethod.InputMethodManager;
 
 import ca.GabrielCastro.fanshaweconnect.R;
@@ -35,8 +34,10 @@ import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 
-public class LoginActivity extends ActionBarActivity
-        implements LoginFragment.CallBacks, ProgressDisplayFragment.Callbacks, CONSTANTS {
+public class LoginActivity extends BaseActivity implements
+        LoginFragment.CallBacks,
+        ProgressDisplayFragment.Callbacks,
+        CONSTANTS {
 
     private static final String EXTRA_REASON = "LoginActivity.extra_reason";
     public static enum Reasons {
