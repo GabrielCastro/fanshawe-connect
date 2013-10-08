@@ -28,6 +28,16 @@ android {
         targetSdkVersion 18
     }
 
+    productFlavors {
+        non_free {
+
+        }
+
+        free {
+
+        }
+    }
+
     signingConfigs {
         release
     }
