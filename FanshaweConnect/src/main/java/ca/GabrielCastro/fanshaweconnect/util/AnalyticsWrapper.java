@@ -14,11 +14,11 @@ public abstract class AnalyticsWrapper {
 
     public interface Timer {
 
-        public void start();
+        public Timer start();
 
-        public void end();
+        public Timer end();
 
-        public void submit();
+        public Timer submit();
 
     }
 

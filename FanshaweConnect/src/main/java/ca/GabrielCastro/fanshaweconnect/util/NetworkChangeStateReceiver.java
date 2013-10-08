@@ -38,7 +38,10 @@ public class NetworkChangeStateReceiver extends BroadcastReceiver implements CON
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        context.startService(StateChangeService.intentWithParent(context, intent));
+        boolean connect = ObfuscatedSharedPreferences.create(context, PREFS_NAME).getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true);
+        if (connect) {
+            context.startService(StateChangeService.intentWithParent(context, intent));
+        }
     }
 
 }

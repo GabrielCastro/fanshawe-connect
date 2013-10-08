@@ -67,6 +67,8 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
             = new WeakHashMap<OnSharedPreferenceChangeListener, OnSharedPreferenceChangeListener>();
 
     public ObfuscatedSharedPreferences(Context context, SharedPreferences delegate) {
+        AnalyticsWrapper.Timer timer = AnalyticsWrapperImpl
+                .getTimer(context, "ObfuscatedSharedPreferences", "create", null).start();
         this.delegate = delegate;
         try {
             PRNGFixes.apply();
@@ -88,6 +90,7 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
                         .commit();
             }
         }
+        timer.end().submit();
     }
 
     public static ObfuscatedSharedPreferences create(Context context, String name) {
