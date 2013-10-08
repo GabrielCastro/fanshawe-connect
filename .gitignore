@@ -31,5 +31,6 @@ proguard/
 
 ##
 FanshaweConnect/build
+FanshaweConnect/src/non_free
 libraries/appcompat/gen
 libraries/appcompat/build
