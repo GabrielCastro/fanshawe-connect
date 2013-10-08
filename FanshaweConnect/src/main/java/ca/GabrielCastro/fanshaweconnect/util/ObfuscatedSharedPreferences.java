@@ -85,6 +85,8 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
         boolean shouldClear = false;
         try {
             shouldClear = !saltHash64.equals(this.getString(KEY_VERSION, null));
+        } catch(Exception e) {
+            shouldClear = true;
         } finally {
             if (shouldClear) {
                 this.edit().clear().commit();
