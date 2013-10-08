@@ -56,9 +56,9 @@ git submodule update --init libraries/ntlm/
 ```
 
 - Modify some files :
- 
- + open ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences.java
- + modify the `SEKRIT` variable by changing the randomly generated Base64 String
+
+ + open ca.GabrielCastro.fanshaweconnect.util.SecretKeyGenerator.java
+ + modify the `getSecretKey` method by changing the randomly generated Base64 String
 
 - Build using the included gradle wrapper
  ```sh
