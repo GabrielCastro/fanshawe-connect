@@ -29,9 +29,11 @@ android {
     }
 
     productFlavors {
+        /*** Prevent build errors when building from github
         non_free {
 
         }
+        //*/
 
         free {
 
