@@ -59,8 +59,9 @@ public class LoginActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
 
         String[] userFirstLastName = new String[2];
-        userFirstLastName[0] = getSecurePreferences().getString(KEY_FIRST_NAME, null);
-        userFirstLastName[1] = getSecurePreferences().getString(KEY_LAST_NAME, null);
+        SharedPreferences secPrefs = getSecurePreferences();
+        userFirstLastName[0] = secPrefs.getString(KEY_FIRST_NAME, null);
+        userFirstLastName[1] = secPrefs.getString(KEY_LAST_NAME, null);
         if (userFirstLastName[0] != null && userFirstLastName[1] != null) {
             startMain(userFirstLastName);
             return;
@@ -81,7 +82,6 @@ public class LoginActivity extends ActionBarActivity
         ft.commit();
 
         getReasonFromIntent();
-
     }
 
     private void getReasonFromIntent() {

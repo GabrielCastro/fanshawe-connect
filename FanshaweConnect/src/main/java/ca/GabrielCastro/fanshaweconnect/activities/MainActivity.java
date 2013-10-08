@@ -66,6 +66,13 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         setContentView(R.layout.activity_main);
 
         mPrefs = ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
+        String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
+        String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
+        if (user == null || pass == null) {
+            logout(LoginActivity.Reasons.CORRUPT_PREF);
+            return;
+        }
+        new CheckCredentials(user, pass, this).execute();
 
         String[] userPass = getIntent().getExtras().getStringArray(EXTRA_PERSON_NAME);
         ((TextView) findViewById(R.id.hello_world)).setText(getString(R.string.person_name, userPass[0], userPass[1]));
@@ -86,13 +93,6 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         mGoToEmail.setTextColor(Color.GRAY);
 
 
-        String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
-        String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
-        if (user != null && pass != null) {
-            new CheckCredentials(user, pass, this).execute();
-        } else {
-            logout(LoginActivity.Reasons.CORRUPT_PREF);
-        }
     }
 
     @Override

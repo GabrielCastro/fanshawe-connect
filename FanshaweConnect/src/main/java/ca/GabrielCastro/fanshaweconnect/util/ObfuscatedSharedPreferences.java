@@ -89,7 +89,10 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
             shouldClear = true;
         } finally {
             if (shouldClear) {
-                this.edit().clear().commit();
+                this.edit()
+                        .clear()
+                        .putString(KEY_VERSION, saltHash64)
+                        .commit();
             }
         }
     }
@@ -246,7 +249,8 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
             SecretKey key = keyFactory.generateSecret(new PBEKeySpec(SEKRIT));
             Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
             pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(SALT, 20));
-            return new String(Base64.encode(pbeCipher.doFinal(bytes), Base64.NO_WRAP), UTF8);
+            byte[] doneFinal = pbeCipher.doFinal(bytes);
+            return new String(Base64.encode(doneFinal, Base64.NO_WRAP), UTF8);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -261,7 +265,8 @@ public class ObfuscatedSharedPreferences implements SharedPreferences {
             SecretKey key = keyFactory.generateSecret(new PBEKeySpec(SEKRIT));
             Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
             pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(SALT, 20));
-            return new String(pbeCipher.doFinal(bytes), UTF8);
+            byte[] doneFinal = pbeCipher.doFinal(bytes);
+            return new String(doneFinal, UTF8);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

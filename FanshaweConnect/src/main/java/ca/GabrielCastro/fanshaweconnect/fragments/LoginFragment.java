@@ -214,11 +214,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
         @Override
         protected FolAuthResponse doInBackground(Void... params) {
             FolAuthResponse response = super.doInBackground(params);
-            SharedPreferences p = mCallbacks.getSecurePreferences();
-            p.edit()
-                    .putString(CONSTANTS.KEY_USERNAME, userName)
-                    .putString(CONSTANTS.KEY_PASSWD, password)
-                    .commit();
+            if (response == FolAuthResponse.RETURN_OK) {
+                SharedPreferences p = mCallbacks.getSecurePreferences();
+                p.edit()
+                        .putString(CONSTANTS.KEY_USERNAME, userName)
+                        .putString(CONSTANTS.KEY_PASSWD, password)
+                        .commit();
+            }
             return response;
         }
 
