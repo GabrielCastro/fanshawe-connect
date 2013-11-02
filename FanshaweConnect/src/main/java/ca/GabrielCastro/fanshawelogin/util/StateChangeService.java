@@ -22,6 +22,7 @@ package ca.GabrielCastro.fanshawelogin.util;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +34,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import ca.GabrielCastro.fanshaweconnect.R;
+import ca.GabrielCastro.fanshaweconnect.activities.LoginActivity;
+import ca.GabrielCastro.fanshaweconnect.activities.MainActivity;
 import ca.GabrielCastro.fanshaweconnect.util.NetworkChangeStateReceiver;
 import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
@@ -104,16 +107,26 @@ public class StateChangeService extends IntentService implements CONSTANTS {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         //TODO get a better icon
         builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setContentIntent(
+                PendingIntent.getActivity(
+                        context,
+                        0,
+                        new Intent(context, LoginActivity.class),
+                        0
+                )
+        );
 
         boolean doNotify = false;
         switch (result) {
             case RETURN_OK:
-                builder.setTicker(context.getString(R.string.note_ticker_ok))
-                    .setContentText(context.getString(R.string.note_text_ok, ssid));
+                builder.setContentTitle(context.getString(R.string.note_ticker_ok))
+                        .setTicker(context.getString(R.string.note_ticker_ok))
+                        .setContentText(context.getString(R.string.note_text_ok, ssid));
                 doNotify = true;
                 break;
             case RETURN_INVALID_CRED:
-                builder.setTicker(context.getString(R.string.note_ticker_bad))
+                builder.setContentTitle(context.getString(R.string.note_ticker_ok))
+                        .setTicker(context.getString(R.string.note_ticker_bad))
                         .setContentText(context.getString(R.string.note_text_bad, ssid));
                 doNotify = true;
                 break;
@@ -123,7 +136,8 @@ public class StateChangeService extends IntentService implements CONSTANTS {
             case RETURN_CONNECTION_ERROR:
             case RETURN_USPECIFIED_ERROR:
                 if (Tools.isDebugLevelSet(DEBUG_NOTE_ALL)) {
-                    builder.setTicker("Other")
+                    builder.setContentTitle("DEUBG Other")
+                            .setTicker("DEBUG Other")
                             .setContentText(result.toString());
                     doNotify = true;
                 }
