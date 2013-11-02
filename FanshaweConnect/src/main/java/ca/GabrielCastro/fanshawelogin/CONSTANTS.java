@@ -35,11 +35,12 @@ public interface CONSTANTS {
 
     String KEY_AUTO_CONNECT = "auto_connect_wifi";
 
-	public static final byte DEBUG_ALL_HTTP = 0x01; // 0000 0001
-	public static final byte DEBUG_ALL_CON_STATE_CHANGE = 0x02;// 0000 0010
-	public static final byte DEBUG_ALL_LOGONS = 0x04;// 0000 0100
-	public static final byte DEBUG_THREAD_LONGER = 0x08;// 0000 1000
-	public static final byte DEBUG_FORCE_INIT = 0x10;// 0001 0000
+	public static final byte DEBUG_ALL_HTTP             = 0x01 << 0;
+	public static final byte DEBUG_ALL_CON_STATE_CHANGE = 0x01 << 1;
+	public static final byte DEBUG_ALL_LOGONS           = 0x01 << 2;
+	public static final byte DEBUG_THREAD_LONGER        = 0x01 << 3;
+	public static final byte DEBUG_FORCE_INIT           = 0x01 << 4;
+	public static final byte DEBUG_NOTE_ALL             = 0x01 << 5;
 
     String SECOND_URL
             = "https://www.fanshaweonline.ca/d2l/lp/homepage/LegacyWidgetViewer.d2l" +
@@ -50,6 +51,6 @@ public interface CONSTANTS {
             "&d2l_body_type=3";
 
 	public static byte DEBUG_LEVEL = !BuildConfig.DEBUG ? (byte) 0 :
-            (DEBUG_ALL_HTTP | DEBUG_ALL_CON_STATE_CHANGE | DEBUG_ALL_LOGONS | DEBUG_THREAD_LONGER);
+            (DEBUG_ALL_HTTP | DEBUG_ALL_CON_STATE_CHANGE | DEBUG_ALL_LOGONS | DEBUG_THREAD_LONGER | DEBUG_NOTE_ALL);
 
 }

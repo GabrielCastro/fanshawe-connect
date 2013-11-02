@@ -81,7 +81,8 @@ public class StateChangeService extends IntentService implements CONSTANTS {
         SharedPreferences prefs = ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
         user = prefs.getString(CONSTANTS.KEY_USERNAME, "");
         pass = prefs.getString(CONSTANTS.KEY_PASSWD, "");
-        if (user == "" || pass == "") {
+        boolean autoConnect = prefs.getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true);
+        if (!autoConnect || user == "" || pass == "") {
             Log.d(TAG, "no userpass");
             return;
         }
@@ -121,6 +122,11 @@ public class StateChangeService extends IntentService implements CONSTANTS {
             case RETURN_UNABLE_TO_LOGIN:
             case RETURN_CONNECTION_ERROR:
             case RETURN_USPECIFIED_ERROR:
+                if (Tools.isDebugLevelSet(DEBUG_NOTE_ALL)) {
+                    builder.setTicker("Other")
+                            .setContentText(result.toString());
+                    doNotify = true;
+                }
         }
         if (doNotify) {
             noteMan.notify(0, builder.build());
