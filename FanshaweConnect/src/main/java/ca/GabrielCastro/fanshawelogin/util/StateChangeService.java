@@ -30,6 +30,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import ca.GabrielCastro.fanshaweconnect.R;
+import ca.GabrielCastro.fanshaweconnect.util.NetworkChangeStateReceiver;
 import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
@@ -49,6 +50,13 @@ public class StateChangeService extends IntentService implements CONSTANTS {
 
     public static Intent intentWithParent(Context context, Intent parent) {
         return new Intent(context, StateChangeService.class).putExtra(EXTRA_PARENT_INTENT, parent);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        int ret = super.onStartCommand(intent, flags, startId);
+        NetworkChangeStateReceiver.completeWakefulIntent(intent);
+        return ret;
     }
 
     @Override

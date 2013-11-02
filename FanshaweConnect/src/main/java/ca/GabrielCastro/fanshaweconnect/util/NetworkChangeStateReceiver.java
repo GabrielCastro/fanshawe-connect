@@ -22,6 +22,9 @@ package ca.GabrielCastro.fanshaweconnect.util;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.support.v7.appcompat.R;
 
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.StateChangeService;
@@ -32,13 +35,17 @@ import ca.GabrielCastro.fanshawelogin.util.StateChangeService;
  *
  * @see StateChangeService
  */
-public class NetworkChangeStateReceiver extends BroadcastReceiver implements CONSTANTS {
+public class NetworkChangeStateReceiver extends WakefulBroadcastReceiver implements CONSTANTS {
 
     private static final String TAG = "ChSate";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        context.startService(StateChangeService.intentWithParent(context, intent));
+        SharedPreferences prefs = ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
+        boolean autoConnect = prefs.getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true);
+        if (autoConnect) {
+            startWakefulService(context, StateChangeService.intentWithParent(context, intent));
+        }
     }
 
 }
