@@ -32,4 +32,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_logout">logout</string>
 
+    <string name="note_ticker_ok">Logged in</string>
+    <string name="note_text_ok">Automagically connected to %1s</string>
+
+    <string name="note_ticker_bad">Connection Error</string>
+    <string name="note_text_bad">Could not authenticate with %1s have you changed your password?</string>
+
 </resources>

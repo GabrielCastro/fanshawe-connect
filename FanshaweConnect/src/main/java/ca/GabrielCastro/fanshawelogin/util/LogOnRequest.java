@@ -202,7 +202,7 @@ public class LogOnRequest extends AsyncTask<String, Integer, LogOnRequest.Status
             Log.d(TAG, "ssid: |" + ssid + "| regex: |" + SSID_REGEX + "|");
             return Status.RETURN_NOT_AT_FANSHAWE;
         }
-        if (true) { // TODO if checking MAC
+        if (false) { // TODO if checking MAC
             byte[] macConnected = new byte[6];
             String[] macString = wifiInfo.getBSSID().split(":");
             for (int i = 0; i < macString.length; i++) {

@@ -27,6 +27,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import ca.GabrielCastro.fanshaweconnect.R;
@@ -87,27 +90,40 @@ public class StateChangeService extends IntentService implements CONSTANTS {
 
         LogOnRequest.Status result = r.doInThisThread();
 
-        //TODO use new API and make this cleaner in general
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        //TODO get a better icon
-        Notification note = new Notification(R.drawable.ic_launcher, "Connected", System.currentTimeMillis());
+        String ssid = "";
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo != null) {
+            ssid = wifiInfo.getSSID();
+        }
 
+        //TODO use new API and make this cleaner in general
+        NotificationManager noteMan = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        //TODO get a better icon
+        builder.setSmallIcon(R.drawable.ic_launcher);
+
+        boolean doNotify = false;
         switch (result) {
             case RETURN_OK:
-                //TODO resource externalize
-                note.setLatestEventInfo(context, "Logged in",
-                        "you where automatically connected to Fanshawe's wifi using the stored credentials", null);
-                notificationManager.notify(0, note);
+                builder.setTicker(context.getString(R.string.note_ticker_ok))
+                    .setContentText(context.getString(R.string.note_text_ok, ssid));
+                doNotify = true;
                 break;
             case RETURN_INVALID_CRED:
-                note.setLatestEventInfo(context, "Error", "Your Credentials appear to be broken, or maybe we're not at Fanshawe", null);
-                notificationManager.notify(0, note);
+                builder.setTicker(context.getString(R.string.note_ticker_bad))
+                        .setContentText(context.getString(R.string.note_text_bad, ssid));
+                doNotify = true;
                 break;
             case RETURN_NOT_AT_FANSHAWE:
             case RETURN_AT_FANSHAWE_OK:
             case RETURN_UNABLE_TO_LOGIN:
             case RETURN_CONNECTION_ERROR:
             case RETURN_USPECIFIED_ERROR:
+        }
+        if (doNotify) {
+            noteMan.notify(0, builder.build());
         }
     }
 
