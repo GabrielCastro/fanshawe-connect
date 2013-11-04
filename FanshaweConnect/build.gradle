@@ -17,6 +17,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:18.0.+"
     compile "org.apache.commons:commons-lang3:3.1"
     compile project(':libraries:ntlm')
+    compile project(':BetterPreferences')
 }
 
 android {
@@ -29,9 +30,12 @@ android {
     }
 
     productFlavors {
-        /*** Prevent build errors when building from github
+        ///*** Prevent build errors when building from github
         non_free {
-
+            dependencies {
+                non_freeCompile "ch.acra:acra:4.5.0"
+                non_freeCompile files('libs/non_free/ga/libGoogleAnalyticsServices.jar')
+            }
         }
         //*/
 
