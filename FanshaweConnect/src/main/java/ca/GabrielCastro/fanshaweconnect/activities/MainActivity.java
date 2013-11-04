@@ -21,21 +21,16 @@ package ca.GabrielCastro.fanshaweconnect.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.fragments.MainFragment;
-import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
-import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
@@ -46,14 +41,6 @@ public class MainActivity extends BaseActivity implements
 
     public static final String TAG = "FanConnect.MainActivity";
     public static final String EXTRA_PERSON_NAME = "fanshaweconnect.MainActivity.personName";
-
-
-    private TextView mConnectingText;
-    private CheckBox mAutoConnectSetting;
-    private Button mGoToFOL;
-    private Button mGoToEmail;
-    private SharedPreferences mPrefs;
-    private CheckCredentials.FolAuthResponse mLastAuth;
 
     public static Intent IntentWithPersonName(Context from, String[] personName) {
         return new Intent(from, MainActivity.class).putExtra(EXTRA_PERSON_NAME, personName);
@@ -102,7 +89,9 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void logout(LoginActivity.Reasons why) {
-        ObfuscatedSharedPreferences.create(MainActivity.this, CONSTANTS.PREFS_NAME).edit().clear().commit();
+        MyPreferences.edit(this)
+                .clear()
+                .commit();
         startActivity(LoginActivity.getIntent(this, why));
         MainActivity.this.finish();
     }

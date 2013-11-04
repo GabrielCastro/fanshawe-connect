@@ -23,6 +23,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
+import ca.GabrielCastro.fanshaweconnect.util.pref.AvailablePrefs;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.StateChangeService;
 
@@ -38,7 +40,7 @@ public class NetworkChangeStateReceiver extends BroadcastReceiver implements CON
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        boolean connect = ObfuscatedSharedPreferences.create(context, PREFS_NAME).getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true);
+        boolean connect = MyPreferences.read(context, AvailablePrefs.AUTO_CONNECT);
         if (connect) {
             context.startService(StateChangeService.intentWithParent(context, intent));
         }

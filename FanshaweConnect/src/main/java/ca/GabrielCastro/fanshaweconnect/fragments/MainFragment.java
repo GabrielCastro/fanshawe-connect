@@ -21,7 +21,6 @@ package ca.GabrielCastro.fanshaweconnect.fragments;
 
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,12 +35,12 @@ import android.widget.Toast;
 
 import java.util.Stack;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.activities.LoginActivity;
 import ca.GabrielCastro.fanshaweconnect.util.GetSSO;
 import ca.GabrielCastro.fanshaweconnect.util.GetSSOTask;
-import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
-import ca.GabrielCastro.fanshawelogin.CONSTANTS;
+import ca.GabrielCastro.fanshaweconnect.util.pref.AvailablePrefs;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
@@ -60,7 +59,6 @@ public class MainFragment extends BaseFragment implements
     private CheckBox mAutoConnectSetting;
     private Button mGoToFOL;
     private Button mGoToEmail;
-    private SharedPreferences mPrefs;
     private CheckCredentials.FolAuthResponse mLastAuth;
     private CallBacks mCB;
     private final Stack<WithCallbacks> mCallBackStack = new Stack<WithCallbacks>();
@@ -95,9 +93,9 @@ public class MainFragment extends BaseFragment implements
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        mPrefs = ObfuscatedSharedPreferences.create(mApp, CONSTANTS.PREFS_NAME);
-        String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
-        String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
+        String user = MyPreferences.read(mApp, AvailablePrefs.USER_NAME);
+        String pass = MyPreferences.read(mApp, AvailablePrefs.PASS_WORD);
+
         if (user == null || pass == null) {
             logout(LoginActivity.Reasons.CORRUPT_PREF);
             return;
@@ -115,7 +113,7 @@ public class MainFragment extends BaseFragment implements
         mConnectingText.setText(R.string.login_progress_connecting);
         mConnectingText.setTextColor(getResources().getColor(R.color.holo_yellow));
 
-        mAutoConnectSetting.setChecked(mPrefs.getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true));
+        mAutoConnectSetting.setChecked(MyPreferences.read(mApp, AvailablePrefs.AUTO_CONNECT));
         mAutoConnectSetting.setOnCheckedChangeListener(this);
         mGoToFOL.setOnClickListener(this);
         mGoToEmail.setOnClickListener(this);
@@ -133,7 +131,7 @@ public class MainFragment extends BaseFragment implements
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        mPrefs.edit().putBoolean(CONSTANTS.KEY_AUTO_CONNECT, isChecked).commit();
+        MyPreferences.set(mApp, AvailablePrefs.AUTO_CONNECT, isChecked);
     }
 
     @Override
@@ -157,8 +155,8 @@ public class MainFragment extends BaseFragment implements
     }
 
     private void launchFOL(GetSSO.Destination destination) {
-        String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
-        String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
+        String user = MyPreferences.read(mApp, AvailablePrefs.USER_NAME);
+        String pass = MyPreferences.read(mApp, AvailablePrefs.PASS_WORD);
         if (user == null || pass == null) {
             logout(LoginActivity.Reasons.CORRUPT_PREF);
             return;

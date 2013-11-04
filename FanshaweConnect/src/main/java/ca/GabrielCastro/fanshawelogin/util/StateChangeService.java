@@ -24,13 +24,13 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
 import ca.GabrielCastro.fanshaweconnect.R;
-import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
+import ca.GabrielCastro.fanshaweconnect.util.pref.AvailablePrefs;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
 /**
@@ -67,9 +67,8 @@ public class StateChangeService extends IntentService implements CONSTANTS {
             Log.d(TAG, "changed state to: " + netInfo);
         }
 
-        SharedPreferences prefs = ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
-        user = prefs.getString(CONSTANTS.KEY_USERNAME, "");
-        pass = prefs.getString(CONSTANTS.KEY_PASSWD, "");
+        user = MyPreferences.read(this, AvailablePrefs.USER_NAME);
+        pass = MyPreferences.read(this, AvailablePrefs.PASS_WORD);
         if (user == "" || pass == "") {
             Log.d(TAG, "no userpass");
             return;
