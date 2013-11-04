@@ -21,40 +21,26 @@ package ca.GabrielCastro.fanshaweconnect.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
 import ca.GabrielCastro.fanshaweconnect.R;
-import ca.GabrielCastro.fanshaweconnect.util.GetSSO;
-import ca.GabrielCastro.fanshaweconnect.util.GetSSOTask;
-import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
-import ca.GabrielCastro.fanshawelogin.CONSTANTS;
+import ca.GabrielCastro.fanshaweconnect.fragments.MainFragment;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 import ca.GabrielCastro.fanshawelogin.util.OnCredentialsChecked;
 
-public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, GetSSOTask.OnComplete, MenuItem.OnMenuItemClickListener, OnCredentialsChecked {
+public class MainActivity extends BaseActivity implements
+        OnCredentialsChecked,
+        MainFragment.CallBacks,
+        MenuItem.OnMenuItemClickListener {
 
-    public static final String TAG = "FanConnect";
+    public static final String TAG = "FanConnect.MainActivity";
     public static final String EXTRA_PERSON_NAME = "fanshaweconnect.MainActivity.personName";
-
-
-    private TextView mConnectingText;
-    private CheckBox mAutoConnectSetting;
-    private Button mGoToFOL;
-    private Button mGoToEmail;
-    private SharedPreferences mPrefs;
-    private CheckCredentials.FolAuthResponse mLastAuth;
 
     public static Intent IntentWithPersonName(Context from, String[] personName) {
         return new Intent(from, MainActivity.class).putExtra(EXTRA_PERSON_NAME, personName);
@@ -63,36 +49,15 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mPrefs = ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
-        String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
-        String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
-        if (user == null || pass == null) {
-            logout(LoginActivity.Reasons.CORRUPT_PREF);
-            return;
+        String[] personName = getIntent().getExtras().getStringArray(EXTRA_PERSON_NAME);
+        Fragment retained = getSupportFragmentManager().findFragmentByTag(TAG);
+        if (retained == null) {
+            retained = MainFragment.newInstance(personName);
+            retained.setRetainInstance(true);
         }
-        new CheckCredentials(user, pass, this).execute();
-
-        String[] userPass = getIntent().getExtras().getStringArray(EXTRA_PERSON_NAME);
-        ((TextView) findViewById(R.id.hello_world)).setText(getString(R.string.person_name, userPass[0], userPass[1]));
-
-        mConnectingText = (TextView) findViewById(R.id.connected);
-        mAutoConnectSetting = (CheckBox) findViewById(R.id.wifi_check);
-        mGoToFOL = (Button) findViewById(R.id.go_fol);
-        mGoToEmail = (Button) findViewById(R.id.go_email);
-
-        mConnectingText.setText(R.string.login_progress_connecting);
-        mConnectingText.setTextColor(getResources().getColor(R.color.holo_yellow));
-
-        mAutoConnectSetting.setChecked(mPrefs.getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true));
-        mAutoConnectSetting.setOnCheckedChangeListener(this);
-        mGoToFOL.setOnClickListener(this);
-        mGoToEmail.setOnClickListener(this);
-        mGoToFOL.setTextColor(Color.GRAY);
-        mGoToEmail.setTextColor(Color.GRAY);
-
-
+        getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, retained, TAG)
+                .commit();
     }
 
     @Override
@@ -102,41 +67,6 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        mPrefs.edit().putBoolean(CONSTANTS.KEY_AUTO_CONNECT, isChecked).commit();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.go_fol:
-                if (mLastAuth == CheckCredentials.FolAuthResponse.RETURN_OK) {
-                    launchFOL(GetSSO.Destination.FOL);
-                } else {
-                    Toast.makeText(this, "Can't do that until we connect", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.go_email:
-                if (mLastAuth == CheckCredentials.FolAuthResponse.RETURN_OK) {
-                    launchFOL(GetSSO.Destination.EMAIL);
-                } else {
-                    Toast.makeText(this, "Can't do that until we connect", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
-
-    private void launchFOL(GetSSO.Destination destination) {
-        String user = mPrefs.getString(CONSTANTS.KEY_USERNAME, null);
-        String pass = mPrefs.getString(CONSTANTS.KEY_PASSWD, null);
-        if (user == null || pass == null) {
-            logout(LoginActivity.Reasons.CORRUPT_PREF);
-            return;
-        }
-        GetSSOTask getSSO = new GetSSOTask(destination, user, pass, this);
-        getSSO.executeOnPool((Void) null);
-    }
 
     @Override
     public void onGotSSO(Uri ssoUri) {
@@ -149,11 +79,6 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     }
 
     @Override
-    public void onFailed() {
-        Toast.makeText(this, "get SSO Failed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
@@ -163,33 +88,16 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         return false;
     }
 
-    private void logout(LoginActivity.Reasons why) {
-        ObfuscatedSharedPreferences.create(MainActivity.this, CONSTANTS.PREFS_NAME).edit().clear().commit();
+    public void logout(LoginActivity.Reasons why) {
+        MyPreferences.edit(this)
+                .clear()
+                .commit();
         startActivity(LoginActivity.getIntent(this, why));
         MainActivity.this.finish();
     }
 
     @Override
     public void credentialsChecked(CheckCredentials.FolAuthResponse result, String[] name) {
-        mLastAuth = result;
-        int color = Color.BLACK;
-        switch (result) {
-            case RETURN_ERROR:
-            case RETURN_EXCEPTION:
-                mConnectingText.setText("Can't Connect");
-                mConnectingText.setTextColor(getResources().getColor(R.color.fanshawe_red));
-                color = Color.GRAY;
-                break;
-            case RETURN_INVALID:
-                logout(LoginActivity.Reasons.INLAID_PASS);
-                return;
-            case RETURN_OK:
-                mConnectingText.setText(R.string.connected);
-                mConnectingText.setTextColor(getResources().getColor(R.color.holo_green));
-                color = Color.BLACK;
-                break;
-        }
-        mGoToFOL.setTextColor(color);
-        mGoToEmail.setTextColor(color);
+
     }
 }

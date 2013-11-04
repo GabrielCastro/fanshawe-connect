@@ -1,1 +1,3 @@
-include ':FanshaweConnect', ':libraries:ntlm'
+include ':FanshaweConnect'
+include ':libraries:ntlm'
+include ':BetterPreferences'

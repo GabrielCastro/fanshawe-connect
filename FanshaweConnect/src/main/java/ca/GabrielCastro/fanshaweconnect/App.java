@@ -19,10 +19,16 @@
 
 package ca.GabrielCastro.fanshaweconnect;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
+
+import ca.GabrielCastro.betterpreferences.MyPreferences;
+import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
+import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
 /**
  * The Application Class for the app
@@ -47,6 +53,13 @@ public class App extends android.app.Application {
         } catch (PackageManager.NameNotFoundException e) {
             Log.wtf("FanshaweConnect[App]", "Self not found", e);
         }
+
+        MyPreferences.setFactory(new MyPreferences.SharedPreferencesFactory() {
+            @Override
+            public SharedPreferences create(Context context) {
+                return ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
+            }
+        });
     }
 
     /**

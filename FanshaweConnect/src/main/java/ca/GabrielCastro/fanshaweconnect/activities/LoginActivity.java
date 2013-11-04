@@ -21,22 +21,23 @@ package ca.GabrielCastro.fanshaweconnect.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.view.inputmethod.InputMethodManager;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.fragments.LoginFragment;
 import ca.GabrielCastro.fanshaweconnect.fragments.ProgressDisplayFragment;
-import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
+import ca.GabrielCastro.fanshaweconnect.util.pref.AvailablePrefs;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 
-public class LoginActivity extends ActionBarActivity
-        implements LoginFragment.CallBacks, ProgressDisplayFragment.Callbacks, CONSTANTS {
+public class LoginActivity extends BaseActivity implements
+        LoginFragment.CallBacks,
+        ProgressDisplayFragment.Callbacks,
+        CONSTANTS {
 
     private static final String EXTRA_REASON = "LoginActivity.extra_reason";
     public static enum Reasons {
@@ -59,9 +60,8 @@ public class LoginActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
 
         String[] userFirstLastName = new String[2];
-        SharedPreferences secPrefs = getSecurePreferences();
-        userFirstLastName[0] = secPrefs.getString(KEY_FIRST_NAME, null);
-        userFirstLastName[1] = secPrefs.getString(KEY_LAST_NAME, null);
+        userFirstLastName[0] = MyPreferences.read(this, AvailablePrefs.FIRST_NAME);
+        userFirstLastName[1] = MyPreferences.read(this, AvailablePrefs.LAST_NAME);
         if (userFirstLastName[0] != null && userFirstLastName[1] != null) {
             startMain(userFirstLastName);
             return;
@@ -114,9 +114,9 @@ public class LoginActivity extends ActionBarActivity
 
     @Override
     public void success(String[] userNameLastName) {
-        getSecurePreferences().edit()
-                .putString(KEY_FIRST_NAME, userNameLastName[0])
-                .putString(KEY_LAST_NAME, userNameLastName[1])
+        MyPreferences.edit(this)
+                .put(AvailablePrefs.FIRST_NAME, userNameLastName[0])
+                .put(AvailablePrefs.LAST_NAME, userNameLastName[1])
                 .commit();
         startMain(userNameLastName);
     }
@@ -129,11 +129,6 @@ public class LoginActivity extends ActionBarActivity
                 .show(mLoginFragment)
                 .setCustomAnimations(R.anim.abc_fade_out, R.anim.abc_fade_in)
                 .commit();
-    }
-
-    @Override
-    public SharedPreferences getSecurePreferences() {
-        return ObfuscatedSharedPreferences.create(this, CONSTANTS.PREFS_NAME);
     }
 
     public static Intent getIntent(Context context, Reasons reason) {

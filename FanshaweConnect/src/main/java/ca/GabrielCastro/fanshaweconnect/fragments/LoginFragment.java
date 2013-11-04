@@ -20,6 +20,7 @@
 package ca.GabrielCastro.fanshaweconnect.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,12 +36,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.activities.LoginActivity;
+import ca.GabrielCastro.fanshaweconnect.util.pref.AvailablePrefs;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.CheckCredentials;
 
-public class LoginFragment extends Fragment implements View.OnClickListener, TextView.OnEditorActionListener {
+public class LoginFragment extends BaseFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private CallBacks mCallbacks;
     private LoginTask mTask;
@@ -196,8 +199,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
 
         public void failed(CheckCredentials.FolAuthResponse code);
 
-        public SharedPreferences getSecurePreferences();
-
     }
 
     private class LoginTask extends CheckCredentials {
@@ -215,10 +216,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Tex
         protected FolAuthResponse doInBackground(Void... params) {
             FolAuthResponse response = super.doInBackground(params);
             if (response == FolAuthResponse.RETURN_OK) {
-                SharedPreferences p = mCallbacks.getSecurePreferences();
-                p.edit()
-                        .putString(CONSTANTS.KEY_USERNAME, userName)
-                        .putString(CONSTANTS.KEY_PASSWD, password)
+                MyPreferences.edit(mApp)
+                        .put(AvailablePrefs.USER_NAME, userName)
+                        .put(AvailablePrefs.PASS_WORD, password)
                         .commit();
             }
             return response;

@@ -17,9 +17,20 @@
  *     along with FanshaweConnect.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.GabrielCastro.fanshaweconnect.util;
+package ca.GabrielCastro.fanshaweconnect.fragments;
 
+import android.app.Activity;
+import android.support.v4.app.Fragment;
 
-public class AnalyticsWrapper {
+import ca.GabrielCastro.fanshaweconnect.App;
 
+public class BaseFragment extends Fragment {
+
+    protected App mApp;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mApp = (App) activity.getApplication();
+    }
 }

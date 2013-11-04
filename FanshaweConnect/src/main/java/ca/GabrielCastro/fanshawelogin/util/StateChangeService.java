@@ -25,7 +25,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -33,11 +32,11 @@ import android.net.wifi.WifiManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
 import ca.GabrielCastro.fanshaweconnect.R;
 import ca.GabrielCastro.fanshaweconnect.activities.LoginActivity;
-import ca.GabrielCastro.fanshaweconnect.activities.MainActivity;
 import ca.GabrielCastro.fanshaweconnect.util.NetworkChangeStateReceiver;
-import ca.GabrielCastro.fanshaweconnect.util.ObfuscatedSharedPreferences;
+import ca.GabrielCastro.fanshaweconnect.util.pref.AvailablePrefs;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 
 /**
@@ -81,10 +80,9 @@ public class StateChangeService extends IntentService implements CONSTANTS {
             Log.d(TAG, "changed state to: " + netInfo);
         }
 
-        SharedPreferences prefs = ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
-        user = prefs.getString(CONSTANTS.KEY_USERNAME, "");
-        pass = prefs.getString(CONSTANTS.KEY_PASSWD, "");
-        boolean autoConnect = prefs.getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true);
+        user = MyPreferences.read(this, AvailablePrefs.USER_NAME);
+        pass = MyPreferences.read(this, AvailablePrefs.PASS_WORD);
+        boolean autoConnect = MyPreferences.read(this, AvailablePrefs.AUTO_CONNECT);
         if (!autoConnect || user == "" || pass == "") {
             Log.d(TAG, "no userpass");
             return;
@@ -101,7 +99,6 @@ public class StateChangeService extends IntentService implements CONSTANTS {
             ssid = wifiInfo.getSSID();
         }
 
-        //TODO use new API and make this cleaner in general
         NotificationManager noteMan = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);

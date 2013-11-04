@@ -19,13 +19,12 @@
 
 package ca.GabrielCastro.fanshaweconnect.util;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.support.v7.appcompat.R;
 
+import ca.GabrielCastro.betterpreferences.MyPreferences;
+import ca.GabrielCastro.fanshaweconnect.util.pref.AvailablePrefs;
 import ca.GabrielCastro.fanshawelogin.CONSTANTS;
 import ca.GabrielCastro.fanshawelogin.util.StateChangeService;
 
@@ -41,9 +40,8 @@ public class NetworkChangeStateReceiver extends WakefulBroadcastReceiver impleme
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences prefs = ObfuscatedSharedPreferences.create(context, CONSTANTS.PREFS_NAME);
-        boolean autoConnect = prefs.getBoolean(CONSTANTS.KEY_AUTO_CONNECT, true);
-        if (autoConnect) {
+        boolean connect = MyPreferences.read(context, AvailablePrefs.AUTO_CONNECT);
+        if (connect) {
             startWakefulService(context, StateChangeService.intentWithParent(context, intent));
         }
     }
