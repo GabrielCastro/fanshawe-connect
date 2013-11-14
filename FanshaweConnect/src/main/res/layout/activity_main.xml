@@ -99,15 +99,16 @@
 
     </LinearLayout>
 
-    <ImageView
+    <ImageButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/map"
-        android:scaleType="matrix"
+        android:id="@+id/map_btn"
+        android:src="@drawable/map_btn"
+        android:scaleType="centerCrop"
         android:layout_below="@+id/info"
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="@null" />
 
 </RelativeLayout>

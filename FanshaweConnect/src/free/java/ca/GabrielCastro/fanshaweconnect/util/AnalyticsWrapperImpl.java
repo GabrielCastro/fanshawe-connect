@@ -40,17 +40,23 @@ public class AnalyticsWrapperImpl extends AnalyticsWrapper {
 
     }
 
-    public static class Timer {
-        public Timer(Context context) {
+    public static AnalyticsWrapper.Timer getTimer(Context context, String category, String name, String label) {
+        return new Timer();
+    }
+
+    public static class Timer implements AnalyticsWrapper.Timer {
+
+        public Timer start() {
+            return this;
         }
 
-        public void start() {
+        public Timer end() {
+            return this;
         }
 
-        public void end() {
-        }
+        public Timer submit() {
+            return this;
 
-        public void submit() {
         }
     }
 }

@@ -21,6 +21,7 @@ package ca.GabrielCastro.fanshaweconnect.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,11 +56,14 @@ public class MainFragment extends BaseFragment implements
     public static final String TAG = "FanConnect.MainFragment";
     public static final String EXTRA_PERSON_NAME = "fanshaweconnect.MainActivity.personName";
 
+    public static final String MY_LTC_PKG = "ca.GabrielCastro.LTC";
+    public static final String MY_LTC_PLAY= "market://details?referrer=utm_source%3Dfanshawe-connect%26utm_medium%3Dmain-btn&id=" + MY_LTC_PKG;
 
     private TextView mConnectingText;
     private CheckBox mAutoConnectSetting;
     private Button mGoToFOL;
     private Button mGoToEmail;
+    private ImageButton mMap;
     private CheckCredentials.FolAuthResponse mLastAuth;
     private CallBacks mCB;
     private final Stack<WithCallbacks> mCallBackStack = new Stack<WithCallbacks>();
@@ -109,6 +114,7 @@ public class MainFragment extends BaseFragment implements
         mAutoConnectSetting = (CheckBox) view.findViewById(R.id.wifi_check);
         mGoToFOL = (Button) view.findViewById(R.id.go_fol);
         mGoToEmail = (Button) view.findViewById(R.id.go_email);
+        mMap = (ImageButton) view.findViewById(R.id.map_btn);
 
         mConnectingText.setText(R.string.login_progress_connecting);
         mConnectingText.setTextColor(getResources().getColor(R.color.holo_yellow));
@@ -119,7 +125,7 @@ public class MainFragment extends BaseFragment implements
         mGoToEmail.setOnClickListener(this);
         mGoToFOL.setTextColor(Color.GRAY);
         mGoToEmail.setTextColor(Color.GRAY);
-
+        mMap.setOnClickListener(this);
 
     }
 
@@ -150,6 +156,14 @@ public class MainFragment extends BaseFragment implements
                 } else {
                     Toast.makeText(mApp, "Can't do that until we connect", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.map_btn:
+                Intent myLTC = mApp.getPackageManager().getLaunchIntentForPackage(MY_LTC_PKG);
+                if (myLTC == null) {
+                    myLTC = new Intent(Intent.ACTION_VIEW)
+                            .setData(Uri.parse(MY_LTC_PLAY));
+                }
+                startActivity(myLTC);
                 break;
         }
     }
