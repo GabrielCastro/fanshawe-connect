@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -64,6 +65,7 @@ public class MainFragment extends BaseFragment implements
     private Button mGoToFOL;
     private Button mGoToEmail;
     private ImageButton mMap;
+    private ImageButton mLtcIcon;
     private CheckCredentials.FolAuthResponse mLastAuth;
     private CallBacks mCB;
     private final Stack<WithCallbacks> mCallBackStack = new Stack<WithCallbacks>();
@@ -115,6 +117,7 @@ public class MainFragment extends BaseFragment implements
         mGoToFOL = (Button) view.findViewById(R.id.go_fol);
         mGoToEmail = (Button) view.findViewById(R.id.go_email);
         mMap = (ImageButton) view.findViewById(R.id.map_btn);
+        mLtcIcon = (ImageButton) view.findViewById(R.id.ltc_icon);
 
         mConnectingText.setText(R.string.login_progress_connecting);
         mConnectingText.setTextColor(getResources().getColor(R.color.holo_yellow));
@@ -126,6 +129,14 @@ public class MainFragment extends BaseFragment implements
         mGoToFOL.setTextColor(Color.GRAY);
         mGoToEmail.setTextColor(Color.GRAY);
         mMap.setOnClickListener(this);
+        mLtcIcon.setOnClickListener(this);
+        mLtcIcon.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mMap.onTouchEvent(event);
+                return true;
+            }
+        });
 
     }
 
@@ -158,6 +169,7 @@ public class MainFragment extends BaseFragment implements
                 }
                 break;
             case R.id.map_btn:
+            case R.id.ltc_icon:
                 Intent myLTC = mApp.getPackageManager().getLaunchIntentForPackage(MY_LTC_PKG);
                 if (myLTC == null) {
                     myLTC = new Intent(Intent.ACTION_VIEW)

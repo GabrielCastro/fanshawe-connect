@@ -111,4 +111,15 @@
         android:layout_alignParentBottom="true"
         android:background="@null" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ltc_icon"
+        android:src="@drawable/ic_ltc"
+        android:layout_below="@+id/info"
+        android:layout_alignParentRight="true"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:layout_marginRight="8dp" />
+
 </RelativeLayout>
