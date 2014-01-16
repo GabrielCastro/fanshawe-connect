@@ -19,15 +19,31 @@
 
 package ca.GabrielCastro.fanshaweconnect;
 
+
+import android.os.Build;
 import android.util.Log;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+
+@ReportsCrashes(
+        formKey = "", // This is required for backward compatibility but not used
+        formUri = BuildConfig.ACRA_URI,
+        formUriBasicAuthLogin = BuildConfig.ACRA_USR,
+        formUriBasicAuthPassword = BuildConfig.ACRA_PWD,
+        httpMethod = org.acra.sender.HttpSender.Method.PUT,
+        reportType = org.acra.sender.HttpSender.Type.JSON
+)
 public class AppImpl extends App {
 
-    private static final String TAG = "fanshaweconnect.AppImpl.free";
+    private static final String TAG = "fanshaweconnect.AppImpl.non_free";
 
     @Override
     public void onCreate() {
         super.onCreate();
+        if (BuildConfig.ACRA_ENABLE) {
+            ACRA.init(this);
+        }
         Log.e(TAG, "onCreate");
     }
 }

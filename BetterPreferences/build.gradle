@@ -17,14 +17,6 @@
  *     along with FanshaweConnect.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
-    }
-}
 apply plugin: 'android-library'
 
 repositories {

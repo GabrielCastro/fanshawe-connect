@@ -17,14 +17,6 @@
  *     along with FanshaweConnect.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
-    }
-}
 apply plugin: 'android'
 
 repositories {
@@ -35,13 +27,38 @@ dependencies {
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.android.support:appcompat-v7:19.0.+'
     compile 'org.apache.commons:commons-lang3:3.1'
+    compile "ch.acra:acra:4.5.0"
+
+    compile files('libs/non_free/ga/libGoogleAnalyticsServices.jar')
+
     compile project(':libraries:ntlm')
     compile project(':BetterPreferences')
 }
 
+def getUri() {
+    if (project.hasProperty("acra_uri")) {
+        return acra_uri;
+    }
+    return "null"
+}
+
+def getUsr() {
+    if (project.hasProperty("acra_usr")) {
+        return acra_usr;
+    }
+    return "null"
+}
+
+def getPwd() {
+    if (project.hasProperty("acra_pwd")) {
+        return acra_pwd;
+    }
+    return "null"
+}
+
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.0'
+    buildToolsVersion '19.0.1'
 
     defaultConfig {
         minSdkVersion 8
@@ -49,17 +66,18 @@ android {
     }
 
     productFlavors {
-        ///*** Prevent build errors when building from github
         non_free {
-            dependencies {
-                non_freeCompile "ch.acra:acra:4.5.0"
-                non_freeCompile files('libs/non_free/ga/libGoogleAnalyticsServices.jar')
-            }
+            buildConfigField "String", "ACRA_URI", getUri()
+            buildConfigField "String", "ACRA_USR", getUsr()
+            buildConfigField "String", "ACRA_PWD", getPwd()
+            buildConfigField "boolean", "ACRA_ENABLE", "true"
         }
-        //*/
 
         free {
-
+            buildConfigField "String", "ACRA_URI", "null"
+            buildConfigField "String", "ACRA_USR", "null"
+            buildConfigField "String", "ACRA_PWD", "null"
+            buildConfigField "boolean", "ACRA_ENABLE", "false"
         }
     }
 
