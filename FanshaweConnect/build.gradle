@@ -74,9 +74,9 @@ android {
         }
 
         free {
-            buildConfigField "String", "ACRA_URI", "null"
-            buildConfigField "String", "ACRA_USR", "null"
-            buildConfigField "String", "ACRA_PWD", "null"
+            buildConfigField "String", "ACRA_URI", '"ACRA-NULL-STRING"'
+            buildConfigField "String", "ACRA_USR", '"ACRA-NULL-STRING"'
+            buildConfigField "String", "ACRA_PWD", '"ACRA-NULL-STRING"'
             buildConfigField "boolean", "ACRA_ENABLE", "false"
         }
     }

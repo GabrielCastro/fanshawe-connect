@@ -20,8 +20,10 @@
 package ca.GabrielCastro.fanshaweconnect;
 
 
-import android.os.Build;
 import android.util.Log;
+
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.GoogleAnalytics;
 
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
@@ -43,6 +45,8 @@ public class AppImpl extends App {
         super.onCreate();
         if (BuildConfig.ACRA_ENABLE) {
             ACRA.init(this);
+            EasyTracker.getInstance(this);
+            GoogleAnalytics.getInstance(this);
         }
         Log.e(TAG, "onCreate");
     }
