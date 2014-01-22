@@ -31,39 +31,12 @@
             backward-compatibility can go here.
         -->
 
-    </style>
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:editTextStyle">@style/EditTextAppTheme</item>
+        <item name="android:textSelectHandleLeft">@drawable/text_select_handle_left</item>
+        <item name="android:textSelectHandleRight">@drawable/text_select_handle_right</item>
+        <item name="android:textSelectHandle">@drawable/text_select_handle_middle</item>
 
         <item name="android:textColorHighlight">#99cc0000</item>
 
-        <item name="android:checkboxStyle">@style/CheckBoxAppTheme</item>
-
-        <item name="android:buttonStyle">@style/ButtonAppTheme</item>
-
-        <item name="android:imageButtonStyle">@style/ImageButtonAppTheme</item>
-
-        <item name="android:spinnerStyle">@style/SpinnerAppTheme</item>
-
-        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemAppTheme</item>
-
-        <item name="android:listViewStyle">@style/ListViewAppTheme</item>
-
-        <item name="android:listViewWhiteStyle">@style/ListViewAppTheme.White</item>
-
-        <item name="android:spinnerItemStyle">@style/SpinnerItemAppTheme</item>
-
-        <item name="android:listChoiceIndicatorMultiple">@drawable/btn_check_holo_light</item>
-
-    </style>
-
-    <style name="LoginFormContainer">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">8dp</item>
     </style>
 
 </resources>

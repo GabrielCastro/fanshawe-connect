@@ -47,13 +47,10 @@
       <item name="android:dropDownSelector">@drawable/list_selector_holo_light</item>
   </style>
 
-  <style name="SpinnerAppTheme.DropDown">
-      <item name="android:spinnerMode">dropdown</item>
-  </style>
-
   <style name="SpinnerDropDownItemAppTheme" parent="android:Widget.DropDownItem.Spinner">
       <item name="android:checkMark">@drawable/btn_radio_holo_light</item>
   </style>
+
   <style name="ListViewAppTheme" parent="android:Widget.ListView">
       <item name="android:listSelector">@drawable/list_selector_holo_light</item>
   </style>
