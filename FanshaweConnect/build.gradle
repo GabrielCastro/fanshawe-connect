@@ -28,6 +28,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.0.+'
     compile 'org.apache.commons:commons-lang3:3.1'
     compile "ch.acra:acra:4.5.0"
+    compile 'com.readystatesoftware.systembartint:systembartint:+'
 
     compile files('libs/non_free/ga/libGoogleAnalyticsServices.jar')
 

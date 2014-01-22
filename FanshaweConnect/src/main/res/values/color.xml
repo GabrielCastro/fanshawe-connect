@@ -22,6 +22,7 @@
 
     <color name="fanshawe_red">#C00</color>
     <color name="key_red">#CB2016</color>
+    <color name="action_bar_red">#D22</color>
     <color name="holo_green">#9C0</color>
     <color name="holo_yellow">#fb3</color>
     <color name="transparent">#0fff</color>

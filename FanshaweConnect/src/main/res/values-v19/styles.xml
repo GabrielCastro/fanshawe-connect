@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+
+        <item name="android:textSelectHandleLeft">@drawable/text_select_handle_left</item>
+        <item name="android:textSelectHandleRight">@drawable/text_select_handle_right</item>
+        <item name="android:textSelectHandle">@drawable/text_select_handle_middle</item>
+
+
+        <item name="android:textColorHighlight">#99cc0000</item>
+
+        <item name="android:editTextBackground">@drawable/edit_text_holo_light</item>
+
+        <item name="android:dropDownSpinnerStyle">@style/SpinnerAppTheme</item>
+
+        <item name="android:listChoiceBackgroundIndicator">@drawable/list_selector_holo_light</item>
+
+        <item name="android:activatedBackgroundIndicator">
+            @drawable/activated_background_holo_light
+        </item>
+
+        <item name="android:fitsSystemWindows">true</item>
+
+        <item name="android:clipToPadding">false</item>
+
+        <item name="android:windowTranslucentStatus">true</item>
+
+    </style>
+
+</resources>
