@@ -40,21 +40,21 @@ def getUri() {
     if (project.hasProperty("acra_uri")) {
         return acra_uri;
     }
-    return "null"
+    return '"ACRA-NULL-STRING"'
 }
 
 def getUsr() {
     if (project.hasProperty("acra_usr")) {
         return acra_usr;
     }
-    return "null"
+    return '"ACRA-NULL-STRING"'
 }
 
 def getPwd() {
     if (project.hasProperty("acra_pwd")) {
         return acra_pwd;
     }
-    return "null"
+    return '"ACRA-NULL-STRING"'
 }
 
 android {
