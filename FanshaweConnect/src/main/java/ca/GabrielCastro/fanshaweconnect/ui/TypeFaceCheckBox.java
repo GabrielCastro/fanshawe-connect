@@ -72,12 +72,7 @@ public class TypeFaceCheckBox extends CheckBox {
         if (this.isInEditMode() || typeFace == null) {
             return;
         }
-        try {
-            context.getAssets().open(typeFace);
-            this.setTypeface(Typeface.createFromAsset(context.getAssets(), typeFace));
-        } catch (IOException e) {
-            throw new RuntimeException(typeFace + " is not a valid asset", e);
-        }
+        this.setTypeface(TypeFaceManager.get(context, typeFace));
     }
 
 
