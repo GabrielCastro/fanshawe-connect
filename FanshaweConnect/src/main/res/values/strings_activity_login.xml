@@ -39,7 +39,7 @@
 
     <string name="welcome">Welcome</string>
 
-    <string name="oops">Oops...</string>
+    <string name="oops">Oops&#8230;</string>
 
     <string name="extra_text_changed_cred">It looks like your account password has changed</string>
     <string name="extra_text_corrupt_pref">Something on your device has changed.\nFor your account safety you have been lodgged out of Fanshawe Connect</string>

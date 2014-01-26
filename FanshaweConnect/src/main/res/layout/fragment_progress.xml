@@ -32,7 +32,7 @@
             android:id="@+id/progressBar"
             android:layout_gravity="center"/>
 
-    <TextView
+    <ca.GabrielCastro.fanshaweconnect.ui.TypeFaceTextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"

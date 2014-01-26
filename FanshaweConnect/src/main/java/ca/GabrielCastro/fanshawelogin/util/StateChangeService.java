@@ -30,6 +30,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import ca.GabrielCastro.betterpreferences.MyPreferences;
@@ -83,7 +84,7 @@ public class StateChangeService extends IntentService implements CONSTANTS {
         user = MyPreferences.read(this, AvailablePrefs.USER_NAME);
         pass = MyPreferences.read(this, AvailablePrefs.PASS_WORD);
         boolean autoConnect = MyPreferences.read(this, AvailablePrefs.AUTO_CONNECT);
-        if (!autoConnect || user == "" || pass == "") {
+        if (!autoConnect || TextUtils.isEmpty(user) || TextUtils.isEmpty(pass)) {
             Log.d(TAG, "no userpass");
             return;
         }

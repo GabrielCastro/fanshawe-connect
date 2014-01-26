@@ -48,7 +48,6 @@
                 android:id="@+id/login_extra_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/connected"
                 android:text="@string/extra_text_changed_cred"
                 android:textSize="18sp"
                 tf:type_face="Roboto-Condensed-Regular.ttf"
@@ -98,7 +97,7 @@
                 android:imeActionId="@+id/login"
                 android:imeOptions="actionUnspecified"/>
 
-        <Button
+        <ca.GabrielCastro.fanshaweconnect.ui.TypeFaceButton
                 android:id="@+id/sign_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

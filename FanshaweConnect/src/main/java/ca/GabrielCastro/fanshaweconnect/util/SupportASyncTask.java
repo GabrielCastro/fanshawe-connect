@@ -19,6 +19,7 @@
 
 package ca.GabrielCastro.fanshaweconnect.util;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -27,6 +28,7 @@ import android.os.Build;
  */
 public abstract class SupportASyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
+    @SuppressLint("NewApi")
     public SupportASyncTask<Params, Progress, Result> executeOnPool(Params... args) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             return (SupportASyncTask<Params, Progress, Result>) this.executeOnExecutor(THREAD_POOL_EXECUTOR, args);
