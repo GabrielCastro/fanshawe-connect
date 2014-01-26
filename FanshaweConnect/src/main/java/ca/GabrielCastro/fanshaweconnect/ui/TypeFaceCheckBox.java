@@ -19,6 +19,7 @@
 
 package ca.GabrielCastro.fanshaweconnect.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
@@ -34,6 +35,7 @@ import ca.GabrielCastro.fanshaweconnect.R;
  * from xml and sets it's type face using the value and
  * {@link Typeface#createFromAsset(android.content.res.AssetManager, String)}
  */
+@SuppressLint("Instantiatable")
 public class TypeFaceCheckBox extends CheckBox {
 
     private String typeFace;
